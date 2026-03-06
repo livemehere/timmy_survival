@@ -1,6 +1,7 @@
 #include "Core/GameObject.hpp"
 #include "Core/Prefabs.hpp"
 #include "Core/World.hpp"
+#include "Utils/MathUtils.hpp"
 #include "raylib.h"
 
 constexpr int screenWidth = 1600;
@@ -17,11 +18,11 @@ int main() {
   GameObject *player =
       Prefabs::CreatePlayer(world, {screenCenterWidth, screenCenterHeight});
 
-  Vector2 pos = {
-      player->position.x + 200.0f,
-      player->position.y + 200.0f,
-  };
-  GameObject *enemy1 = Prefabs::CreateKnight(world, pos, player);
+  for (int i = 0; i < 10; i++) {
+    Vector2 pos =
+        MathUtils::GetRandomArroundPosition(player->position, 300.0f, 700.0f);
+    GameObject *enemy1 = Prefabs::CreateKnight(world, pos, player);
+  }
 
   while (!WindowShouldClose()) {
     float dt = GetFrameTime();
