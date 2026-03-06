@@ -33,8 +33,8 @@ public:
       T *ptr = dynamic_cast<T *>(comp.get());
       if (ptr != nullptr)
         return ptr;
-      return nullptr;
     }
+    return nullptr;
   }
 
   void Update(float dt) {
