@@ -1,2 +1,24 @@
 .cache
 build/
+out/
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+Testing/
+
+# Build metadata
+compile_commands.json
+
+# Ninja
+*.ninja
+.ninja_*
+
+# Binaries
+timmy-survival
+
+# macOS
+.DS_Store
