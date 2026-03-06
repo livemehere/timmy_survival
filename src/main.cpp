@@ -17,6 +17,12 @@ int main() {
   GameObject *player =
       Prefabs::CreatePlayer(world, {screenCenterWidth, screenCenterHeight});
 
+  Vector2 pos = {
+      player->position.x + 200.0f,
+      player->position.y + 200.0f,
+  };
+  GameObject *enemy1 = Prefabs::CreateKnight(world, pos, player);
+
   while (!WindowShouldClose()) {
     float dt = GetFrameTime();
 
