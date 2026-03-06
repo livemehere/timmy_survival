@@ -1,12 +1,34 @@
+#include "Core/Components/BoxCollider.hpp"
+#include "Core/World.hpp"
 #include "raylib.h"
 
+constexpr int screenWidth = 1200;
+constexpr int screenHeight = 800;
+constexpr int screenCenter = screenWidth / 2;
+constexpr int screenMiddle = screenHeight / 2;
+
 int main() {
-  InitWindow(1200, 800, "Timmy Survival");
+  SetConfigFlags(FLAG_VSYNC_HINT);
+  InitWindow(screenWidth, screenHeight, "Timmy Survival");
+
+  World world;
+
+  GameObject *player = world.CreateObject("Player");
+  player->AddComponent<BoxCollider>(50.0f, 50.0f);
+  player->position = {screenCenter, screenMiddle};
 
   while (!WindowShouldClose()) {
+    float dt = GetFrameTime();
+
+    world.Update(dt);
+
     BeginDrawing();
     ClearBackground(RAYWHITE);
+
+    DrawFPS(10, 10);
     DrawText("Hello World", 600, 400, 40, BLACK);
+    world.Draw();
+
     EndDrawing();
   }
 
