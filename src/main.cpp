@@ -1,12 +1,12 @@
-#include "Core/Components/BoxCollider.hpp"
-#include "Core/Components/PlayerController.hpp"
+#include "Core/GameObject.hpp"
+#include "Core/Prefabs.hpp"
 #include "Core/World.hpp"
 #include "raylib.h"
 
 constexpr int screenWidth = 1600;
 constexpr int screenHeight = 900;
-constexpr int screenCenter = screenWidth / 2;
-constexpr int screenMiddle = screenHeight / 2;
+constexpr int screenCenterWidth = screenWidth / 2;
+constexpr int screenCenterHeight = screenHeight / 2;
 
 int main() {
   SetConfigFlags(FLAG_VSYNC_HINT);
@@ -14,10 +14,8 @@ int main() {
 
   World world;
 
-  GameObject *player = world.CreateObject("Player");
-  player->AddComponent<BoxCollider>(50.0f, 50.0f);
-  player->AddComponent<PlayerController>(180.0f);
-  player->position = {screenCenter, screenMiddle};
+  GameObject *player =
+      Prefabs::CreatePlayer(world, {screenCenterWidth, screenCenterHeight});
 
   while (!WindowShouldClose()) {
     float dt = GetFrameTime();

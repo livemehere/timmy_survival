@@ -1,0 +1,10 @@
+#pragma once
+
+#include "raylib.h"
+
+#include "GameObject.hpp"
+#include "World.hpp"
+
+namespace Prefabs {
+GameObject *CreatePlayer(World &world, Vector2 position);
+}
