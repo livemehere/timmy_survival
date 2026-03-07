@@ -9,7 +9,9 @@ namespace Prefabs {
 GameObject *CreatePlayer(World &world, Vector2 position) {
   GameObject *player = world.CreateObject("player1");
   player->position = position;
-  player->AddComponent<CircleCollider>(20.0f);
+  auto collider = player->AddComponent<CircleCollider>(20.0f);
+  collider->mass = 1.0f;
+  collider->isStatic = true;
   player->AddComponent<PlayerController>(150.0f);
   return player;
 }
@@ -18,7 +20,7 @@ GameObject *CreateKnight(World &world, Vector2 position, GameObject *target) {
   GameObject *knight = world.CreateObject("knight");
   knight->position = position;
 
-  knight->AddComponent<BoxCollider>(20.0f, 20.0f);
+  knight->AddComponent<CircleCollider>(20.0f);
   knight->AddComponent<EnemyAI>(target, 35.0f);
 
   return knight;

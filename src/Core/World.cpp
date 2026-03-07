@@ -75,11 +75,13 @@ void World::ResolveCircleCircleCollision(CircleCollider *a, CircleCollider *b) {
 
     Vector2 pushDir = Vector2Normalize(Vector2Subtract(ca, cb));
 
+    auto [ra, rb] = Collider::GetResponseRatios(a, b);
+
     a->gameObject->position = Vector2Add(a->gameObject->position,
-                                         Vector2Scale(pushDir, overlap * 0.5f));
+                                         Vector2Scale(pushDir, overlap * ra));
 
     b->gameObject->position = Vector2Subtract(
-        b->gameObject->position, Vector2Scale(pushDir, overlap * 0.5f));
+        b->gameObject->position, Vector2Scale(pushDir, overlap * rb));
   };
 }
 void World::ResolveBoxBoxCollision(BoxCollider *a, BoxCollider *b) {
@@ -88,14 +90,15 @@ void World::ResolveBoxBoxCollision(BoxCollider *a, BoxCollider *b) {
 
   if (CheckCollisionRecs(rectA, rectB)) {
     Rectangle overlap = GetCollisionRec(rectA, rectB);
+    auto [ra, rb] = Collider::GetResponseRatios(a, b);
     if (overlap.width > overlap.height) {
       float dir = (rectA.x < rectB.x) ? -1.0f : 1.0f;
-      a->gameObject->position.x += dir * overlap.width * 0.51f;
-      b->gameObject->position.x -= dir * overlap.width * 0.51f;
+      a->gameObject->position.x += dir * overlap.width * ra;
+      b->gameObject->position.x -= dir * overlap.width * rb;
     } else {
       float dir = (rectA.y < rectB.y) ? -1.0f : 1.0f;
-      a->gameObject->position.y += dir * overlap.height * 0.51f;
-      b->gameObject->position.y -= dir * overlap.height * 0.51f;
+      a->gameObject->position.y += dir * overlap.height * ra;
+      b->gameObject->position.y -= dir * overlap.height * rb;
     }
   }
 }
@@ -112,14 +115,15 @@ void World::ResolveCircleBoxCollision(CircleCollider *circle,
 
   if (dist < minDist) {
     float overlap = minDist - dist;
+    auto [ra, rb] = Collider::GetResponseRatios(circle, box);
 
     Vector2 pushDir =
         Vector2Normalize(Vector2Subtract(center, {closetX, closetY}));
 
     circle->gameObject->position = Vector2Add(
-        circle->gameObject->position, Vector2Scale(pushDir, overlap * 0.5f));
+        circle->gameObject->position, Vector2Scale(pushDir, overlap * ra));
 
     box->gameObject->position = Vector2Subtract(
-        box->gameObject->position, Vector2Scale(pushDir, overlap * 0.5f));
+        box->gameObject->position, Vector2Scale(pushDir, overlap * rb));
   }
 }
