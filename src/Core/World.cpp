@@ -1,5 +1,7 @@
 #include "World.hpp"
+#include "Collider.hpp"
 #include "Components/BoxCollider.hpp"
+#include "Components/CircleCollider.hpp"
 #include "raylib.h"
 #include "raymath.h"
 #include <iostream>
@@ -22,10 +24,10 @@ void World::Draw() {
   }
 }
 
-std::vector<BoxCollider *> World::GetAllColliders() {
-  std::vector<BoxCollider *> colliders;
+std::vector<Collider *> World::GetAllColliders() {
+  std::vector<Collider *> colliders;
   for (auto &obj : objects) {
-    auto col = obj->GetComponent<BoxCollider>();
+    auto col = obj->GetComponent<Collider>();
     if (col)
       colliders.push_back(col);
   }
@@ -37,20 +39,31 @@ void World::ResolveCollisions() {
 
   for (size_t i = 0; i < colliders.size(); i++) {
     for (size_t j = i + 1; j < colliders.size(); j++) {
-      BoxCollider *a = colliders[i];
-      BoxCollider *b = colliders[j];
+      Collider *a = colliders[i];
+      Collider *b = colliders[j];
 
-      Rectangle rectA = a->GetRect();
-      Rectangle rectB = b->GetRect();
-
-      if (CheckCollisionRecs(rectA, rectB)) {
-        Vector2 ca = {rectA.x + rectA.width / 2, rectA.y + rectA.height / 2};
-        Vector2 cb = {rectB.x + rectB.width / 2, rectB.y + rectB.height / 2};
-
-        // Vector2 minDist =
-        // Vector2 distance = Vector2Subtract(ca, cb);
-        // Vector2 pushDir = Vector2Normalize(overlap);
+      if (a->type == ColliderType::CIRCLE && b->type == ColliderType::CIRCLE) {
+        ResolveCircleCircleCollision(static_cast<CircleCollider *>(a),
+                                     static_cast<CircleCollider *>(b));
+      } else if (a->type == ColliderType::BOX && b->type == ColliderType::BOX) {
+        ResolveBoxBoxCollision(static_cast<BoxCollider *>(a),
+                               static_cast<BoxCollider *>(b));
+      } else {
+        // mix case
+        if (a->type == ColliderType::CIRCLE) {
+          ResolveCircleBoxCollision(static_cast<CircleCollider *>(a),
+                                    static_cast<BoxCollider *>(b));
+        } else {
+          ResolveCircleBoxCollision(static_cast<CircleCollider *>(b),
+                                    static_cast<BoxCollider *>(a));
+        }
       }
     }
   }
 }
+
+void World::ResolveCircleCircleCollision(CircleCollider *a, CircleCollider *b) {
+}
+void World::ResolveBoxBoxCollision(BoxCollider *a, BoxCollider *b) {}
+void World::ResolveCircleBoxCollision(CircleCollider *circle,
+                                      BoxCollider *box) {}

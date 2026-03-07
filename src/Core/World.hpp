@@ -1,6 +1,8 @@
 #pragma once
 
+#include "Collider.hpp"
 #include "Components/BoxCollider.hpp"
+#include "Components/CircleCollider.hpp"
 #include "GameObject.hpp"
 #include <memory>
 #include <string>
@@ -13,6 +15,9 @@ public:
   GameObject *CreateObject(std::string name);
   void Update(float dt);
   void Draw();
-  std::vector<BoxCollider *> GetAllColliders();
+  std::vector<Collider *> GetAllColliders();
   void ResolveCollisions();
+  void ResolveCircleCircleCollision(CircleCollider *a, CircleCollider *b);
+  void ResolveBoxBoxCollision(BoxCollider *a, BoxCollider *b);
+  void ResolveCircleBoxCollision(CircleCollider *circle, BoxCollider *box);
 };
