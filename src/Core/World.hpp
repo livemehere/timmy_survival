@@ -16,6 +16,8 @@ public:
   void Update(float dt);
   void Draw();
   std::vector<Collider *> GetAllColliders();
+
+  GameObject *GetObjectByName(std::string name);
   void ResolveCollisions();
   void ResolveCircleCircleCollision(CircleCollider *a, CircleCollider *b);
   void ResolveBoxBoxCollision(BoxCollider *a, BoxCollider *b);

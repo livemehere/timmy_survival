@@ -6,6 +6,16 @@
 #include "raymath.h"
 #include <algorithm>
 
+// TODO: improve performance to use. this is simple implementation.
+GameObject *World::GetObjectByName(std::string name) {
+  for (auto &obj : objects) {
+    if (obj->name == name) {
+      return obj.get();
+    }
+  }
+  return nullptr;
+}
+
 GameObject *World::CreateObject(std::string name) {
   auto obj = std::make_shared<GameObject>(name, this);
   objects.push_back(obj);
