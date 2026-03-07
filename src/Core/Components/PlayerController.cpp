@@ -11,7 +11,6 @@ void PlayerController::Update(float dt) {
     movement.y -= 1;
   if (IsKeyDown(KEY_S))
     movement.y += 1;
-
   if (IsKeyDown(KEY_A))
     movement.x -= 1;
   if (IsKeyDown(KEY_D))

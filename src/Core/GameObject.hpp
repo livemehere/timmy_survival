@@ -50,5 +50,5 @@ public:
     DrawPos();
   }
 
-  void DrawPos() { DrawCircleV(position, 2.5, RED); }
+  void DrawPos() {}
 };
