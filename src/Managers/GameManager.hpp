@@ -3,15 +3,19 @@
 #include "../Core/Prefabs.hpp"
 #include "../Core/World.hpp"
 #include "../Utils/MathUtils.hpp"
+#include "CameraManager.hpp"
+#include "raylib.h"
 
 class GameManager {
 public:
   World world;
   GameObject *player;
+  CameraManager cm;
 
   void Init() {
     player = Prefabs::CreatePlayer(world, {0, 0});
 
+    cm.SetTarget(&player->position);
     GenEnemy(10);
   }
 
@@ -26,16 +30,22 @@ public:
   void Update(float dt) {
     world.Update(dt);
     world.ResolveCollisions();
+    cm.Update(dt);
   }
+
+  void DrawUI() { DrawFPS(10, 10); }
 
   void Draw() {
 
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    DrawFPS(10, 10);
-    DrawText("Map", 600, 400, 40, BLACK);
+    BeginMode2D(cm.GetCamera());
+    DrawText("Map", 0, 0, 40, BLACK);
     world.Draw();
+    EndMode2D();
+
+    DrawUI();
 
     EndDrawing();
   }

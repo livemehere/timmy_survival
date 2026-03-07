@@ -47,5 +47,8 @@ public:
     for (auto &comp : components) {
       comp->Draw();
     }
+    DrawPos();
   }
+
+  void DrawPos() { DrawCircleV(position, 2.5, RED); }
 };
