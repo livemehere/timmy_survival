@@ -4,7 +4,6 @@
 #include "Components/CircleCollider.hpp"
 #include "raylib.h"
 #include "raymath.h"
-#include <iostream>
 
 GameObject *World::CreateObject(std::string name) {
   auto obj = std::make_shared<GameObject>(name, this);
@@ -82,6 +81,22 @@ void World::ResolveCircleCircleCollision(CircleCollider *a, CircleCollider *b) {
         b->gameObject->position, Vector2Scale(pushDir, overlap * 0.5f));
   };
 }
-void World::ResolveBoxBoxCollision(BoxCollider *a, BoxCollider *b) {}
+void World::ResolveBoxBoxCollision(BoxCollider *a, BoxCollider *b) {
+  Rectangle rectA = a->GetRect();
+  Rectangle rectB = b->GetRect();
+
+  if (CheckCollisionRecs(rectA, rectB)) {
+    Rectangle overlap = GetCollisionRec(rectA, rectB);
+    if (overlap.width > overlap.height) {
+      float dir = (rectA.x < rectB.x) ? -1.0f : 1.0f;
+      a->gameObject->position.x += dir * overlap.width * 0.51f;
+      b->gameObject->position.x -= dir * overlap.width * 0.51f;
+    } else {
+      float dir = (rectA.y < rectB.y) ? -1.0f : 1.0f;
+      a->gameObject->position.y += dir * overlap.height * 0.51f;
+      b->gameObject->position.y -= dir * overlap.height * 0.51f;
+    }
+  }
+}
 void World::ResolveCircleBoxCollision(CircleCollider *circle,
                                       BoxCollider *box) {}

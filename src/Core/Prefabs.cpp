@@ -1,4 +1,5 @@
 #include "Prefabs.hpp"
+#include "Components/BoxCollider.hpp"
 #include "Components/CircleCollider.hpp"
 #include "Components/EnemyAI.hpp"
 #include "Components/PlayerController.hpp"
@@ -17,7 +18,7 @@ GameObject *CreateKnight(World &world, Vector2 position, GameObject *target) {
   GameObject *knight = world.CreateObject("knight");
   knight->position = position;
 
-  knight->AddComponent<CircleCollider>(20.0f);
+  knight->AddComponent<BoxCollider>(20.0f, 20.0f);
   knight->AddComponent<EnemyAI>(target, 35.0f);
 
   return knight;
