@@ -4,6 +4,7 @@
 #include "Components/CircleCollider.hpp"
 #include "raylib.h"
 #include "raymath.h"
+#include <algorithm>
 
 GameObject *World::CreateObject(std::string name) {
   auto obj = std::make_shared<GameObject>(name, this);
@@ -99,4 +100,26 @@ void World::ResolveBoxBoxCollision(BoxCollider *a, BoxCollider *b) {
   }
 }
 void World::ResolveCircleBoxCollision(CircleCollider *circle,
-                                      BoxCollider *box) {}
+                                      BoxCollider *box) {
+  Vector2 center = circle->GetCenter();
+  Rectangle rect = box->GetRect();
+
+  float closetX = std::clamp(center.x, rect.x, rect.x + rect.width);
+  float closetY = std::clamp(center.y, rect.y, rect.y + rect.height);
+
+  float dist = Vector2Distance(center, {closetX, closetY});
+  float minDist = circle->radius;
+
+  if (dist < minDist) {
+    float overlap = minDist - dist;
+
+    Vector2 pushDir =
+        Vector2Normalize(Vector2Subtract(center, {closetX, closetY}));
+
+    circle->gameObject->position = Vector2Add(
+        circle->gameObject->position, Vector2Scale(pushDir, overlap * 0.5f));
+
+    box->gameObject->position = Vector2Subtract(
+        box->gameObject->position, Vector2Scale(pushDir, overlap * 0.5f));
+  }
+}
