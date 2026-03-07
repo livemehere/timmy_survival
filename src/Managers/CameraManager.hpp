@@ -12,7 +12,7 @@ private:
   Camera2D camera;
   Vector2 *targetPos = nullptr;
   Vector2 offsetRatio = {0.5f, 0.5f};
-  float zoom = 1.0f;
+  float zoom = 3.0f;
   float rotation = 0.0f;
   float lerpSpeed = 5.0f;
 

@@ -28,6 +28,7 @@ public:
         std::cerr << "Failed to load texture: " << path << std::endl;
         return nullptr;
       }
+      SetTextureFilter(texture, TEXTURE_FILTER_POINT);
       textures[path] = texture;
       std::cout << "Loaded texture: " << path << std::endl;
     }

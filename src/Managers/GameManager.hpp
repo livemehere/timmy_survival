@@ -4,6 +4,7 @@
 #include "../Core/World.hpp"
 #include "../Utils/MathUtils.hpp"
 #include "CameraManager.hpp"
+#include "ResourceManager.hpp"
 #include "raylib.h"
 
 class GameManager {
@@ -13,6 +14,9 @@ public:
   CameraManager cm;
 
   void Init() {
+
+    ResourceManager::GetInstance().GetTexture("assets/source.png");
+
     player = Prefabs::CreatePlayer(world, {0, 0});
 
     cm.SetTarget(&player->position);
