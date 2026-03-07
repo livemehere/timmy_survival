@@ -1,8 +1,6 @@
 #pragma once
 
-#include "../../Managers/ResourceManager.hpp"
 #include "../Component.hpp"
-#include "../GameObject.hpp"
 #include "raylib.h"
 #include <string>
 #include <unordered_map>

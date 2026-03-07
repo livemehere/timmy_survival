@@ -1,11 +1,13 @@
 #include "SpriteRenderer.hpp"
+#include "../../Managers/ResourceManager.hpp"
+#include "../GameObject.hpp"
 
-void SpriteRenderer::AddAnimation(const std::string &name, const std::string &texturePath,
-                                  int startX, int startY, int frameWidth, int frameHeight,
+void SpriteRenderer::AddAnimation(const std::string &name,
+                                  const std::string &texturePath, int startX,
+                                  int startY, int frameWidth, int frameHeight,
                                   int frameCount, float frameSpeed, bool loop) {
-  animations[name] = {name,       texturePath, startX,
-                      startY,     frameWidth,  frameHeight,
-                      frameCount, frameSpeed,  loop};
+  animations[name] = {name,        texturePath, startX,     startY, frameWidth,
+                      frameHeight, frameCount,  frameSpeed, loop};
 
   if (currentClip.empty()) {
     Play(name);
