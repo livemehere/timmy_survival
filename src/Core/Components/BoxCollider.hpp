@@ -1,16 +1,15 @@
 #pragma once
-#include "../Component.hpp"
+#include "../Collider.hpp"
 #include "raylib.h"
 
-class BoxCollider : public Component {
+class BoxCollider : public Collider {
 public:
   Vector2 size;
   Vector2 offset;
 
-  BoxCollider(float width, float height, float offsetX = 0.0f,
-              float offsetY = 0.0f) {
+  BoxCollider(float width, float height, Vector2 offset = {0, 0})
+      : Collider(ColliderType::BOX, offset) {
     size = {width, height};
-    offset = {offsetX, offsetY};
   }
 
   Rectangle GetRect();

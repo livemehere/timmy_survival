@@ -28,12 +28,13 @@ int main() {
     float dt = GetFrameTime();
 
     world.Update(dt);
+    world.ResolveCollisions();
 
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
     DrawFPS(10, 10);
-    DrawText("Hello World", 600, 400, 40, BLACK);
+    DrawText("Map", 600, 400, 40, BLACK);
     world.Draw();
 
     EndDrawing();
