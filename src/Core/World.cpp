@@ -63,6 +63,24 @@ void World::ResolveCollisions() {
 }
 
 void World::ResolveCircleCircleCollision(CircleCollider *a, CircleCollider *b) {
+  Vector2 ca = a->GetCenter();
+  Vector2 cb = b->GetCenter();
+  float cr = a->radius;
+  float rb = b->radius;
+
+  if (CheckCollisionCircles(ca, cr, cb, rb)) {
+    float dist = Vector2Distance(ca, cb);
+    float minDist = cr + rb;
+    float overlap = minDist - dist;
+
+    Vector2 pushDir = Vector2Normalize(Vector2Subtract(ca, cb));
+
+    a->gameObject->position = Vector2Add(a->gameObject->position,
+                                         Vector2Scale(pushDir, overlap * 0.5f));
+
+    b->gameObject->position = Vector2Subtract(
+        b->gameObject->position, Vector2Scale(pushDir, overlap * 0.5f));
+  };
 }
 void World::ResolveBoxBoxCollision(BoxCollider *a, BoxCollider *b) {}
 void World::ResolveCircleBoxCollision(CircleCollider *circle,
