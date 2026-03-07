@@ -1,5 +1,6 @@
 #include "EnemyAI.hpp"
 #include "../GameObject.hpp"
+#include "SpriteRenderer.hpp"
 #include "raylib.h"
 #include "raymath.h"
 
@@ -13,4 +14,17 @@ void EnemyAI::Update(float dt) {
 
   gameObject->position.x += dir.x * speed * dt;
   gameObject->position.y += dir.y * speed * dt;
+
+  float len = Vector2Length(dir);
+  auto sprite = gameObject->GetComponent<SpriteRenderer>();
+  if (sprite) {
+    if (len > 0) {
+      // enemy moving
+      sprite->Play("Walk");
+      sprite->flipX = dir.x < 0;
+    } else {
+      // enemy idle
+      sprite->Play("Idle");
+    }
+  }
 }

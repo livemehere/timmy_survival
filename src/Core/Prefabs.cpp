@@ -29,6 +29,14 @@ GameObject *CreateKnight(World &world, Vector2 position, GameObject *target) {
 
   knight->AddComponent<CircleCollider>(8.0f);
   knight->AddComponent<EnemyAI>(target, 35.0f);
+  knight->AddComponent<SpriteRenderer>();
+
+  auto sprite = knight->GetComponent<SpriteRenderer>();
+  sprite->AddAnimation("Idle", "assets/source.png", 128, 64, 16, 32, 2, 0.5f,
+                       true);
+  sprite->AddAnimation("Walk", "assets/source.png", 192, 64, 16, 32, 4, 0.15f,
+                       true);
+  sprite->anchorRatio = {0.5f, 0.75f};
 
   return knight;
 }
