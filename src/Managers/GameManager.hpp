@@ -31,6 +31,12 @@ public:
     world.Update(dt);
     world.ResolveCollisions();
     cm.Update(dt);
+
+    if (IsKeyPressed(KEY_TAB)) {
+      int randomIdx = GetRandomValue(0, world.objects.size() - 1);
+      auto &randomTarget = world.objects[randomIdx];
+      cm.SetTarget(&randomTarget->position);
+    }
   }
 
   void DrawUI() { DrawText("Use WASD to move", 10, 30, 20, DARKGRAY); }
@@ -44,6 +50,7 @@ public:
 
     DrawText("Map", 0, 0, 40, BLACK);
     world.Draw();
+    cm.Draw();
 
     EndMode2D();
 

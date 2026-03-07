@@ -16,6 +16,12 @@ private:
   float rotation = 0.0f;
   float lerpSpeed = 5.0f;
 
+  // target drawing
+  bool showReticle = true;
+  float reticleSize = 20.0f;
+  float reticleThickness = 1.2f;
+  Color reticleColor = LIME;
+
 public:
   CameraManager() {
     camera.target = {0, 0};
@@ -47,4 +53,41 @@ public:
   void SetOffsetRatio(Vector2 newOffsetRatio) { offsetRatio = newOffsetRatio; }
 
   Camera2D GetCamera() { return camera; }
+  void Draw() {
+    if (!showReticle)
+      return;
+
+    Vector2 pos = camera.target;
+
+    float s = reticleSize / camera.zoom;
+    float t = reticleThickness / camera.zoom;
+    float gap = s * 0.3f;
+
+    // lt
+    DrawLineEx({pos.x - s, pos.y - s}, {pos.x - gap, pos.y - s}, t,
+               reticleColor);
+    DrawLineEx({pos.x - s, pos.y - s}, {pos.x - s, pos.y - gap}, t,
+               reticleColor);
+
+    // rt
+    DrawLineEx({pos.x + s, pos.y - s}, {pos.x + gap, pos.y - s}, t,
+               reticleColor);
+    DrawLineEx({pos.x + s, pos.y - s}, {pos.x + s, pos.y - gap}, t,
+               reticleColor);
+
+    // lb
+    DrawLineEx({pos.x - s, pos.y + s}, {pos.x - gap, pos.y + s}, t,
+               reticleColor);
+    DrawLineEx({pos.x - s, pos.y + s}, {pos.x - s, pos.y + gap}, t,
+               reticleColor);
+
+    // rb
+    DrawLineEx({pos.x + s, pos.y + s}, {pos.x + gap, pos.y + s}, t,
+               reticleColor);
+    DrawLineEx({pos.x + s, pos.y + s}, {pos.x + s, pos.y + gap}, t,
+               reticleColor);
+
+    // center
+    DrawCircleV(pos, t * 1.5f, reticleColor);
+  }
 };
