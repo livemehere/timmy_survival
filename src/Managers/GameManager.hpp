@@ -33,7 +33,7 @@ public:
     cm.Update(dt);
   }
 
-  void DrawUI() { DrawFPS(10, 10); }
+  void DrawUI() { DrawText("Use WASD to move", 10, 30, 20, DARKGRAY); }
 
   void Draw() {
 
@@ -41,8 +41,10 @@ public:
     ClearBackground(RAYWHITE);
 
     BeginMode2D(cm.GetCamera());
+
     DrawText("Map", 0, 0, 40, BLACK);
     world.Draw();
+
     EndMode2D();
 
     DrawUI();

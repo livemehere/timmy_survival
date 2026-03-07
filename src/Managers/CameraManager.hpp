@@ -2,7 +2,10 @@
 
 #include "raylib.h"
 #include "raymath.h"
-#include <iostream>
+#include <algorithm>
+
+constexpr float minZoom = 0.1f;
+constexpr float maxZoom = 3.0f;
 
 class CameraManager {
 private:
@@ -31,6 +34,12 @@ public:
       camera.offset = Vector2Lerp(camera.offset, offset, lerpSpeed * dt);
       camera.zoom = Lerp(camera.zoom, zoom, lerpSpeed * dt);
       camera.rotation = Lerp(camera.rotation, rotation, lerpSpeed * dt);
+    }
+
+    float wheelMove = GetMouseWheelMove();
+    if (wheelMove != 0) {
+      zoom += wheelMove * 0.1f;
+      zoom = std::min(std::max(minZoom, zoom), maxZoom);
     }
   }
 
