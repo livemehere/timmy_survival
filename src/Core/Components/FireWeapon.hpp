@@ -62,7 +62,8 @@ public:
   void Draw() override {
 
     DrawCircle(gameObject->position.x, gameObject->position.y, range,
-               Fade(RED, 0.05f));
-    DrawCircleLines(gameObject->position.x, gameObject->position.y, range, RED);
+               Fade(GREEN, 0.05f));
+    DrawCircleLines(gameObject->position.x, gameObject->position.y, range,
+                    GREEN);
   }
 };

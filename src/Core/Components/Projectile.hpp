@@ -1,12 +1,15 @@
 #pragma once
 
+#include <deque>
 #include <iostream>
 #include <unordered_set>
 
 #include "../Components/Health.hpp"
 #include "../GameObject.hpp"
 #include "../Timer.hpp"
+#include "CircleCollider.hpp"
 #include "Collider.hpp"
+#include "raylib.h"
 
 class Projectile : public Component {
 public:
@@ -16,13 +19,31 @@ public:
 
   std::unordered_set<GameObject *> hitObjects;
 
+  // effects
+  std::deque<Vector2> history;
+  Color color = LIME;
+  int maxHistory = 10;
+  float tailTimer = 0.0f;
+  float tailDelay = 0.05f;
+
   Projectile(float damage, float lifetime, int pierce = 1)
       : lifeTimer(lifetime, false), damage(damage), pierce(pierce) {}
 
   void Update(float dt) override {
     if (lifeTimer.Update(dt)) {
       gameObject->Destroy();
-    };
+    }
+
+    // tail effect
+    tailTimer += dt;
+    if (tailTimer >= tailDelay) {
+      tailTimer -= tailDelay;
+      history.push_front(gameObject->position);
+
+      if (history.size() > maxHistory) {
+        history.pop_back();
+      }
+    }
   }
 
   void OnTriggerEnter(Collider *other) override {
@@ -32,8 +53,6 @@ public:
 
     if (hitObjects.find(other->gameObject) != hitObjects.end())
       return;
-
-    std::cout << "Projectile hit: " << other->gameObject->name << std::endl;
 
     auto health = other->gameObject->GetComponent<Health>();
     if (health) {
@@ -47,5 +66,23 @@ public:
     if (pierce <= 0) {
       gameObject->Destroy();
     }
+  }
+
+  void Draw() override {
+    BeginBlendMode(BLEND_ADDITIVE);
+    int size = history.size();
+    auto collider = gameObject->GetComponent<CircleCollider>();
+    Vector2 prevPos = gameObject->position;
+
+    for (size_t i = 0; i < size; i++) {
+      Vector2 pos = history[i];
+      float radiusRatio = (float)(size - i) / size;
+      float radius = collider->radius * radiusRatio;
+
+      DrawLineEx(prevPos, pos, radius, Fade(color, radiusRatio));
+
+      prevPos = pos;
+    }
+    EndBlendMode();
   }
 };
