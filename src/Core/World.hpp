@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Collider.hpp"
+#include "Components/Collider.hpp"
 #include "Components/BoxCollider.hpp"
 #include "Components/CircleCollider.hpp"
 #include "GameObject.hpp"

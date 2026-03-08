@@ -1,12 +1,10 @@
 #pragma once
 
 class Timer {
-private:
+public:
   float targetTime;
   float currentTime;
   bool isLooping;
-
-public:
   Timer(float target, bool loop = true) {
     targetTime = target;
     currentTime = 0.0f;

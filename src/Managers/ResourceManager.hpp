@@ -5,6 +5,8 @@
 #include <string>
 #include <unordered_map>
 
+// const char *GLOLBAL_TEXTURE_PATH = "../../assets/source.png";
+
 class ResourceManager {
 private:
   std::unordered_map<std::string, Texture2D> textures;

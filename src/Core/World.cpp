@@ -1,5 +1,5 @@
 #include "World.hpp"
-#include "Collider.hpp"
+#include "Components/Collider.hpp"
 #include "Components/BoxCollider.hpp"
 #include "Components/CircleCollider.hpp"
 #include "raylib.h"

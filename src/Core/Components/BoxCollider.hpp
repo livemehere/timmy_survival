@@ -1,5 +1,5 @@
 #pragma once
-#include "../Collider.hpp"
+#include "Collider.hpp"
 #include "raylib.h"
 
 class BoxCollider : public Collider {

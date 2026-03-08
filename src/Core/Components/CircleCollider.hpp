@@ -1,6 +1,6 @@
 #pragma once
-#include "../Collider.hpp"
 #include "../GameObject.hpp"
+#include "Collider.hpp"
 #include "raymath.h"
 
 class CircleCollider : public Collider {
