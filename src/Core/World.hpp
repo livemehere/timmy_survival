@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Components/Collider.hpp"
 #include "Components/BoxCollider.hpp"
 #include "Components/CircleCollider.hpp"
+#include "Components/Collider.hpp"
 #include "GameObject.hpp"
 #include <memory>
 #include <string>
@@ -22,4 +22,5 @@ public:
   void ResolveCircleCircleCollision(CircleCollider *a, CircleCollider *b);
   void ResolveBoxBoxCollision(BoxCollider *a, BoxCollider *b);
   void ResolveCircleBoxCollision(CircleCollider *circle, BoxCollider *box);
+  void HandleTriggerEvent(Collider *a, Collider *b);
 };

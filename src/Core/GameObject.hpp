@@ -8,13 +8,23 @@
 
 class World;
 
+enum class Layer {
+  DEFAULT = 0,
+  PLAYER = 1,
+  ENEMY = 2,
+  PROJECTILE = 3,
+  UI = 4,
+};
+
 class GameObject {
 public:
   World *world = nullptr;
 
+  Layer layer = Layer::DEFAULT;
   std::string name;
   Vector2 position = {0.0f, 0.0f};
   std::vector<std::shared_ptr<Component>> components;
+  bool isAlive = true;
 
   GameObject(std::string name, World *world) {
     this->name = name;
@@ -51,4 +61,6 @@ public:
   }
 
   void DrawPos() {}
+
+  void Destroy() { isAlive = false; }
 };

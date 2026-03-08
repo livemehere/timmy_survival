@@ -15,12 +15,19 @@ public:
   ColliderType type;
   Vector2 offset = {0, 0};
   bool isStatic = false;
+  bool isTrigger = false;
   float mass = 1.0f;
 
   Collider(ColliderType type, Vector2 offset) : type(type), offset(offset) {}
   virtual ~Collider() = default;
 
   static CollisionRatios GetResponseRatios(Collider *a, Collider *b) {
+    // this case not trigger, because in `World` handle if one of them is
+    // `isTrigger`.
+    if (a->isTrigger || b->isTrigger) {
+      return {0.0f, 0.0f};
+    };
+
     if (a->isStatic && b->isStatic)
       return {0.0f, 0.0f};
     if (a->isStatic)

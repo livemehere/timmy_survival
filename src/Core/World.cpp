@@ -1,7 +1,7 @@
 #include "World.hpp"
-#include "Components/Collider.hpp"
 #include "Components/BoxCollider.hpp"
 #include "Components/CircleCollider.hpp"
+#include "Components/Collider.hpp"
 #include "raylib.h"
 #include "raymath.h"
 #include <algorithm>
@@ -26,6 +26,12 @@ void World::Update(float dt) {
   for (auto &obj : objects) {
     obj->Update(dt);
   }
+
+  objects.erase(std::remove_if(objects.begin(), objects.end(),
+                               [](const std::shared_ptr<GameObject> &obj) {
+                                 return !obj->isAlive;
+                               }),
+                objects.end());
 }
 
 void World::Draw() {
@@ -79,6 +85,12 @@ void World::ResolveCircleCircleCollision(CircleCollider *a, CircleCollider *b) {
   float rb = b->radius;
 
   if (CheckCollisionCircles(ca, cr, cb, rb)) {
+
+    if (a->isTrigger || b->isTrigger) {
+      HandleTriggerEvent(a, b);
+      return;
+    }
+
     float dist = Vector2Distance(ca, cb);
     float minDist = cr + rb;
     float overlap = minDist - dist;
@@ -99,6 +111,12 @@ void World::ResolveBoxBoxCollision(BoxCollider *a, BoxCollider *b) {
   Rectangle rectB = b->GetRect();
 
   if (CheckCollisionRecs(rectA, rectB)) {
+
+    if (a->isTrigger || b->isTrigger) {
+      HandleTriggerEvent(a, b);
+      return;
+    }
+
     Rectangle overlap = GetCollisionRec(rectA, rectB);
     auto [ra, rb] = Collider::GetResponseRatios(a, b);
     if (overlap.width > overlap.height) {
@@ -124,6 +142,12 @@ void World::ResolveCircleBoxCollision(CircleCollider *circle,
   float minDist = circle->radius;
 
   if (dist < minDist) {
+
+    if (circle->isTrigger || box->isTrigger) {
+      HandleTriggerEvent(circle, box);
+      return;
+    }
+
     float overlap = minDist - dist;
     auto [ra, rb] = Collider::GetResponseRatios(circle, box);
 
@@ -135,5 +159,15 @@ void World::ResolveCircleBoxCollision(CircleCollider *circle,
 
     box->gameObject->position = Vector2Subtract(
         box->gameObject->position, Vector2Scale(pushDir, overlap * rb));
+  }
+}
+
+void World::HandleTriggerEvent(Collider *a, Collider *b) {
+  for (auto &comp : a->gameObject->components) {
+    comp->OnTriggerEnter(b);
+  }
+
+  for (auto &comp : b->gameObject->components) {
+    comp->OnTriggerEnter(a);
   }
 }
