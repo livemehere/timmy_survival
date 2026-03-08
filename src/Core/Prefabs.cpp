@@ -2,6 +2,7 @@
 #include "Components/CircleCollider.hpp"
 #include "Components/EnemyAI.hpp"
 #include "Components/FireWeapon.hpp"
+#include "Components/Health.hpp"
 #include "Components/PlayerController.hpp"
 #include "Components/SpriteRenderer.hpp"
 #include "GameObject.hpp"
@@ -24,7 +25,7 @@ GameObject *CreatePlayer(World &world, Vector2 position) {
 
   // Weapon
   auto fireWeapon =
-      player->AddComponent<FireWeapon>(10.0f, 0.5f, 100.0f, 2.0f, 2.0f);
+      player->AddComponent<FireWeapon>(1.0f, 0.5f, 100.0f, 2.0f, 2.0f);
 
   return player;
 }
@@ -37,7 +38,13 @@ GameObject *CreateKnight(World &world, Vector2 position, GameObject *target) {
   knight->AddComponent<CircleCollider>(8.0f);
   knight->AddComponent<EnemyAI>(target, 35.0f);
   knight->AddComponent<SpriteRenderer>();
+  auto health = knight->AddComponent<Health>(3.0f);
+  // TODO: drop item with random chance on death
+  health->onDeath = [knight]() {
+    std::cout << knight->name << " has died!" << std::endl;
+  };
 
+  // Body sprite
   auto sprite = knight->GetComponent<SpriteRenderer>();
   sprite->AddAnimation("Idle", "../assets/source.png", 128, 64, 16, 32, 2, 0.5f,
                        true);

@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "../Component.hpp"
+#include "../Components/Health.hpp"
 #include "../GameObject.hpp"
 #include "../Timer.hpp"
 #include "Collider.hpp"
@@ -31,7 +31,11 @@ public:
     std::cout << "Projectile hit: " << other->gameObject->name << std::endl;
     if (pierce <= 0) {
       gameObject->Destroy();
-      other->gameObject->Destroy();
+    }
+
+    auto health = other->gameObject->GetComponent<Health>();
+    if (health) {
+      health->TakeDamage(damage);
     }
   }
 };
