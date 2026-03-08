@@ -22,9 +22,6 @@ public:
         projectileRadius(projectileRadius), range(range) {}
 
   void Activate() override {
-
-    std::cout << "FireWeapon activated! Damage: " << damage << std::endl;
-
     GameObject *target = FindNearestEnemy();
     if (!target) {
       return;
