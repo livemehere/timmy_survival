@@ -25,7 +25,7 @@ GameObject *CreatePlayer(World &world, Vector2 position) {
 
   // Weapon
   auto fireWeapon =
-      player->AddComponent<FireWeapon>(1.0f, 0.5f, 100.0f, 2.0f, 2.0f);
+      player->AddComponent<FireWeapon>(1.0f, 0.1f, 500.0f, 2.0f, 2.0f, 200.0f);
 
   return player;
 }

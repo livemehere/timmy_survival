@@ -5,6 +5,7 @@
 #include "raylib.h"
 #include "raymath.h"
 #include <algorithm>
+#include <cstddef>
 
 // TODO: improve performance to use. this is simple implementation.
 GameObject *World::GetObjectByName(std::string name) {
@@ -23,8 +24,9 @@ GameObject *World::CreateObject(std::string name) {
 }
 
 void World::Update(float dt) {
-  for (auto &obj : objects) {
-    obj->Update(dt);
+  const size_t updateCount = objects.size();
+  for (size_t i = 0; i < updateCount; i++) {
+    objects[i]->Update(dt);
   }
 
   objects.erase(std::remove_if(objects.begin(), objects.end(),
