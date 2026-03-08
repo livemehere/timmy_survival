@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <unordered_set>
 
 #include "../Components/Health.hpp"
 #include "../GameObject.hpp"
@@ -12,6 +13,8 @@ public:
   Timer lifeTimer;
   float damage;
   int pierce = 1;
+
+  std::unordered_set<GameObject *> hitObjects;
 
   Projectile(float damage, float lifetime, int pierce = 1)
       : lifeTimer(lifetime, false), damage(damage), pierce(pierce) {}
@@ -27,15 +30,22 @@ public:
     if (other->gameObject->layer != Layer::ENEMY)
       return;
 
-    pierce--;
+    if (hitObjects.find(other->gameObject) != hitObjects.end())
+      return;
+
     std::cout << "Projectile hit: " << other->gameObject->name << std::endl;
-    if (pierce <= 0) {
-      gameObject->Destroy();
-    }
 
     auto health = other->gameObject->GetComponent<Health>();
     if (health) {
+
+      hitObjects.insert(other->gameObject);
+
+      pierce--;
       health->TakeDamage(damage);
+    }
+
+    if (pierce <= 0) {
+      gameObject->Destroy();
     }
   }
 };

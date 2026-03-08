@@ -6,7 +6,6 @@
 #include "Projectile.hpp"
 #include "Weapon.hpp"
 #include "raymath.h"
-#include <iostream>
 
 class FireWeapon : public Weapon {
 public:
@@ -32,7 +31,7 @@ public:
     auto obj = gameObject->world->CreateObject("projectile");
     obj->layer = Layer::PROJECTILE;
     obj->position = gameObject->position;
-    obj->AddComponent<Projectile>(damage, projectileLifetime);
+    obj->AddComponent<Projectile>(damage, projectileLifetime, 1);
     obj->AddComponent<LinearMovement>(dir, projectileSpeed);
 
     auto col = obj->AddComponent<CircleCollider>(projectileRadius);
