@@ -13,10 +13,10 @@ GameObject *CreatePlayer(World &world, Vector2 position) {
   player->AddComponent<PlayerController>(50.0f);
 
   auto sprite = player->AddComponent<SpriteRenderer>();
-  sprite->AddAnimation("Idle", "assets/source.png", 128, 32, 16, 32, 2, 0.5f,
-                       true);
-  sprite->AddAnimation("Walk", "assets/source.png", 192, 32, 16, 32, 4, 0.15f,
-                       true);
+  sprite->AddAnimation("Idle", "../../assets/source.png", 128, 32, 16, 32, 2,
+                       0.5f, true);
+  sprite->AddAnimation("Walk", "../../assets/source.png", 192, 32, 16, 32, 4,
+                       0.15f, true);
   sprite->anchorRatio = {0.5f, 0.75f};
   sprite->Play("Idle");
 
@@ -32,10 +32,10 @@ GameObject *CreateKnight(World &world, Vector2 position, GameObject *target) {
   knight->AddComponent<SpriteRenderer>();
 
   auto sprite = knight->GetComponent<SpriteRenderer>();
-  sprite->AddAnimation("Idle", "assets/source.png", 128, 64, 16, 32, 2, 0.5f,
-                       true);
-  sprite->AddAnimation("Walk", "assets/source.png", 192, 64, 16, 32, 4, 0.15f,
-                       true);
+  sprite->AddAnimation("Idle", "../../assets/source.png", 128, 64, 16, 32, 2,
+                       0.5f, true);
+  sprite->AddAnimation("Walk", "../../assets/source.png", 192, 64, 16, 32, 4,
+                       0.15f, true);
   sprite->anchorRatio = {0.5f, 0.75f};
 
   return knight;
