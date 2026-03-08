@@ -27,10 +27,9 @@ public:
     if (other->gameObject->layer != Layer::ENEMY)
       return;
 
+    pierce--;
     std::cout << "Projectile hit: " << other->gameObject->name << std::endl;
-    if (pierce > 0) {
-      pierce--;
-    } else {
+    if (pierce <= 0) {
       gameObject->Destroy();
       other->gameObject->Destroy();
     }
