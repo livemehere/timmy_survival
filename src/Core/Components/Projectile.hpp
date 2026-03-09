@@ -19,7 +19,7 @@ public:
   Timer lifeTimer;
   float damage;
   int pierce = 1;
-  float knockbackForce = 50.0f;
+  float knockbackForce = 150.0f;
 
   std::unordered_set<GameObject *> hitObjects;
 

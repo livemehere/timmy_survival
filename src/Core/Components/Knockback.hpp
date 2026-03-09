@@ -23,9 +23,8 @@ public:
 
     float force = Vector2Length(velocity);
     if (force > 0) {
-      float deceleration = friction * dt;
-      force = std::max(force - deceleration, 0.0f);
-      velocity = Vector2Scale(Vector2Normalize(velocity), force);
+      velocity.x = Lerp(velocity.x, 0, friction * dt);
+      velocity.y = Lerp(velocity.y, 0, friction * dt);
     }
   }
 };
