@@ -36,9 +36,11 @@ public:
       float wave = (std::sin(p * PI) * bounceScale);
       sprite->scale.x = 1.0f + wave * squashDirX;
       sprite->scale.y = 1.0f + wave * squashDirY;
+      sprite->tint = Fade(RED, 0.8f);
     } else {
       auto sprite = gameObject->GetComponent<SpriteRenderer>();
       sprite->scale = {1.0f, 1.0f};
+      sprite->tint = WHITE;
     }
   }
 
