@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Managers/CameraManager.hpp"
 #include "Components/BoxCollider.hpp"
 #include "Components/CircleCollider.hpp"
 #include "Components/Collider.hpp"
@@ -11,6 +12,7 @@
 class World {
 public:
   std::vector<std::shared_ptr<GameObject>> objects;
+  CameraManager *cm = nullptr;
 
   GameObject *CreateObject(std::string name);
   void Update(float dt);

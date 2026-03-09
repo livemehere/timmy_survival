@@ -65,8 +65,8 @@ void SpriteRenderer::Draw() {
       x, y, flipX ? (float)-clip.frameWidth : (float)clip.frameWidth,
       (float)clip.frameHeight};
 
-  float drawWidth = clip.frameWidth * scale;
-  float drawHeight = clip.frameHeight * scale;
+  float drawWidth = clip.frameWidth * scale.x;
+  float drawHeight = clip.frameHeight * scale.y;
 
   Rectangle destRect = {gameObject->position.x + offset.x,
                         gameObject->position.y + offset.y, drawWidth,

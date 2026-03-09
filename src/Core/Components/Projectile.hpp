@@ -7,8 +7,10 @@
 #include "../Components/Health.hpp"
 #include "../GameObject.hpp"
 #include "../Timer.hpp"
+#include "../World.hpp"
 #include "CircleCollider.hpp"
 #include "Collider.hpp"
+#include "SpriteRenderer.hpp"
 #include "raylib.h"
 
 class Projectile : public Component {
@@ -61,6 +63,8 @@ public:
 
       pierce--;
       health->TakeDamage(damage);
+
+      gameObject->world->cm->Shake(1.0f, 0.1f);
     }
 
     if (pierce <= 0) {

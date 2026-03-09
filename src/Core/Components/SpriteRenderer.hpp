@@ -29,7 +29,7 @@ class SpriteRenderer : public Component {
   bool isPlaying = false;
 
 public:
-  float scale = 1.0f;
+  Vector2 scale = {1.0f, 1.0f};
   float rotation = 0.0f;
   Color tint = WHITE;
   bool flipX = false;

@@ -16,6 +16,7 @@ public:
   void Init() {
 
     ResourceManager::GetInstance().GetTexture("assets/source.png");
+    world.cm = &cm;
 
     player = Prefabs::CreatePlayer(world, {0, 0});
 
@@ -40,6 +41,9 @@ public:
       int randomIdx = GetRandomValue(0, world.objects.size() - 1);
       auto &randomTarget = world.objects[randomIdx];
       cm.SetTarget(&randomTarget->position);
+    }
+    if (IsKeyPressed(KEY_R)) {
+      GenEnemy(20);
     }
   }
 

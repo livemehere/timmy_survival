@@ -25,6 +25,10 @@ public:
   }
 
   void Reset() { currentTime = 0.0f; }
+  void Reset(float newTarget) {
+    targetTime = newTarget;
+    currentTime = 0.0f;
+  }
 
   void SetTargetTime(float newTarget) { targetTime = newTarget; }
 };
