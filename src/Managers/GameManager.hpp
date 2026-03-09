@@ -12,10 +12,19 @@ public:
   World world;
   GameObject *player;
   CameraManager cm;
+  Shader shader = {0};
+  int timeLoc;
+
+  RenderTexture2D renderTexture;
 
   void Init() {
 
     ResourceManager::GetInstance().GetTexture("../assets/source.png");
+
+    shader = LoadShader(nullptr, "../assets/shaders/world.fs");
+    timeLoc = GetShaderLocation(shader, "time");
+    renderTexture = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
+
     world.cm = &cm;
 
     player = Prefabs::CreatePlayer(world, {0, 0});
@@ -37,6 +46,9 @@ public:
     world.ResolveCollisions();
     cm.Update(dt);
 
+    float time = GetTime();
+    SetShaderValue(shader, timeLoc, &time, SHADER_UNIFORM_FLOAT);
+
     if (IsKeyPressed(KEY_TAB)) {
       int randomIdx = GetRandomValue(0, world.objects.size() - 1);
       auto &randomTarget = world.objects[randomIdx];
@@ -51,19 +63,36 @@ public:
 
   void Draw() {
 
-    BeginDrawing();
+    BeginTextureMode(renderTexture);
     ClearBackground(RAYWHITE);
-
     BeginMode2D(cm.GetCamera());
-
     DrawText("Map", 0, 0, 40, BLACK);
     world.Draw();
     cm.Draw();
-
     EndMode2D();
+    EndTextureMode();
 
+    BeginDrawing();
+    ClearBackground(BLACK);
+    BeginShaderMode(shader);
+    Rectangle sourceRec = {0, 0,
+                           static_cast<float>(renderTexture.texture.width),
+                           static_cast<float>(-renderTexture.texture.height)};
+    DrawTextureRec(renderTexture.texture, sourceRec, {0, 0}, WHITE);
+    EndShaderMode();
+
+    // ---- out of shader effects ----
     DrawUI();
+    DrawFPS(10, 10);
+    // -------------------------------
 
     EndDrawing();
+  }
+
+  void Clear() {
+    if (shader.id != 0) {
+      UnloadShader(shader);
+      shader.id = 0;
+    }
   }
 };

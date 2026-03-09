@@ -17,9 +17,8 @@ int main() {
     float dt = GetFrameTime();
     gm.Update(dt);
     gm.Draw();
-    DrawFPS(10, 10);
   }
-
+  gm.Clear();
   CloseWindow();
   return 0;
 }
