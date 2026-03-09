@@ -11,6 +11,7 @@
 #include "CircleCollider.hpp"
 #include "Collider.hpp"
 #include "Knockback.hpp"
+#include "Particle.hpp"
 #include "SpriteRenderer.hpp"
 #include "raylib.h"
 
@@ -74,6 +75,8 @@ public:
         knockback->Apply(Vector2Scale(dir, knockbackForce));
       }
 
+      SpawnParticles(gameObject->position, MathUtils::GetRandom(3, 5));
+
       gameObject->world->cm->Shake(1.0f, 0.1f);
     }
 
@@ -98,5 +101,23 @@ public:
       prevPos = pos;
     }
     EndBlendMode();
+  }
+
+  void SpawnParticles(Vector2 pos, int count) {
+
+    for (int i = 0; i < count; i++) {
+      auto obj = gameObject->world->CreateObject("particle");
+      obj->position = pos;
+
+      float speed = MathUtils::GetRandom(2.0f, 10.0f);
+      Vector2 velocity = {std::cos(MathUtils::GetRandom(0.0f, 2 * PI)) * speed,
+                          std::sin(MathUtils::GetRandom(0.0f, 2 * PI)) * speed};
+      float lifetime = MathUtils::GetRandom(0.3f, 1.0f);
+      Color color = LIGHTGRAY;
+      float size = MathUtils::GetRandom(3.0f, 6.0f);
+      float friction = MathUtils::GetRandom(7.0f, 10.0f);
+
+      obj->AddComponent<Particle>(velocity, lifetime, color, size, friction);
+    }
   }
 };
