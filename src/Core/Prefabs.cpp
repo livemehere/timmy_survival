@@ -3,6 +3,7 @@
 #include "Components/EnemyAI.hpp"
 #include "Components/FireWeapon.hpp"
 #include "Components/Health.hpp"
+#include "Components/Knockback.hpp"
 #include "Components/PlayerController.hpp"
 #include "Components/SpriteRenderer.hpp"
 #include "GameObject.hpp"
@@ -35,6 +36,7 @@ GameObject *CreateKnight(World &world, Vector2 position, GameObject *target) {
   knight->layer = Layer::ENEMY;
   knight->position = position;
 
+  knight->AddComponent<Knockback>();
   knight->AddComponent<CircleCollider>(8.0f);
   knight->AddComponent<EnemyAI>(target, 35.0f);
   knight->AddComponent<SpriteRenderer>();

@@ -18,8 +18,8 @@ public:
 
   std::function<void()> onDeath;
 
+  Timer hitTimer = Timer(0.0f, false);
   float bounceScale = 0.15f;
-  Timer bounceTimer = Timer(0.0f, false);
   float squashDirX = 1.0f;
   float squashDirY = -1.0f;
 
@@ -30,9 +30,9 @@ public:
       invincibilityTimer -= dt;
     }
 
-    if (!bounceTimer.Update(dt)) {
+    if (!hitTimer.Update(dt)) {
       auto sprite = gameObject->GetComponent<SpriteRenderer>();
-      float p = 1.0f - (bounceTimer.currentTime / bounceTimer.targetTime);
+      float p = 1.0f - (hitTimer.currentTime / hitTimer.targetTime);
       float wave = (std::sin(p * PI) * bounceScale);
       sprite->scale.x = 1.0f + wave * squashDirX;
       sprite->scale.y = 1.0f + wave * squashDirY;
@@ -50,7 +50,7 @@ public:
 
     hp -= damage;
     invincibilityTimer = invincibilityTime;
-    bounceTimer.Reset(0.1f);
+    hitTimer.Reset(0.1f);
 
     if (MathUtils::GetRandom(0, 1) == 0) {
       squashDirX = 1.0f;

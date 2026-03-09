@@ -10,6 +10,7 @@
 #include "../World.hpp"
 #include "CircleCollider.hpp"
 #include "Collider.hpp"
+#include "Knockback.hpp"
 #include "SpriteRenderer.hpp"
 #include "raylib.h"
 
@@ -18,6 +19,7 @@ public:
   Timer lifeTimer;
   float damage;
   int pierce = 1;
+  float knockbackForce = 50.0f;
 
   std::unordered_set<GameObject *> hitObjects;
 
@@ -63,6 +65,14 @@ public:
 
       pierce--;
       health->TakeDamage(damage);
+
+      auto knockback = other->gameObject->GetComponent<Knockback>();
+      if (knockback) {
+        Vector2 dir =
+            Vector2Subtract(other->gameObject->position, gameObject->position);
+        dir = Vector2Normalize(dir);
+        knockback->Apply(Vector2Scale(dir, knockbackForce));
+      }
 
       gameObject->world->cm->Shake(1.0f, 0.1f);
     }
