@@ -15,7 +15,7 @@ public:
 
   void Init() {
 
-    ResourceManager::GetInstance().GetTexture("assets/source.png");
+    ResourceManager::GetInstance().GetTexture("../assets/source.png");
     world.cm = &cm;
 
     player = Prefabs::CreatePlayer(world, {0, 0});
