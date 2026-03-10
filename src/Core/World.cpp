@@ -49,12 +49,12 @@ void World::DrawBg() {
 
   for (float x = startX; x <= bottomRight.x + gridSize; x += gridSize) {
     DrawLineV({x, topLeft.y - gridSize}, {x, bottomRight.y + gridSize},
-              Fade(GRAY, 0.2f));
+              Fade(GRAY, 0.08f));
   }
 
   for (float y = startY; y <= bottomRight.y + gridSize; y += gridSize) {
     DrawLineV({topLeft.x - gridSize, y}, {bottomRight.x + gridSize, y},
-              Fade(GRAY, 0.2f));
+              Fade(GRAY, 0.08f));
   }
 }
 

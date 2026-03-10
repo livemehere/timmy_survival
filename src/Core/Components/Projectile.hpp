@@ -77,7 +77,7 @@ public:
 
       SpawnParticles(gameObject->position, MathUtils::GetRandom(3, 5));
 
-      gameObject->world->cm->Shake(1.0f, 0.1f);
+      gameObject->world->cm->Shake(2.0f, 0.1f);
     }
 
     if (pierce <= 0) {
