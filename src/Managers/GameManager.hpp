@@ -6,6 +6,7 @@
 #include "CameraManager.hpp"
 #include "ResourceManager.hpp"
 #include "raylib.h"
+#include <iostream>
 
 class GameManager {
 public:
@@ -13,7 +14,14 @@ public:
   GameObject *player;
   CameraManager cm;
   Shader shader = {0};
+
   int timeLoc;
+  int centerLoc;
+  int shockTimeLoc;
+  int aspectRatioLoc;
+
+  float shockTime = 999.0f;
+  Vector2 shockCenter = {0.0f, 0.0f};
 
   RenderTexture2D renderTexture;
 
@@ -21,8 +29,17 @@ public:
 
     ResourceManager::GetInstance().GetTexture("../assets/source.png");
 
-    shader = LoadShader(nullptr, "../assets/shaders/world.fs");
+    shader = LoadShader(nullptr, "../assets/shaders/world.frag");
+
+    // Get shader uniform locations
     timeLoc = GetShaderLocation(shader, "time");
+    centerLoc = GetShaderLocation(shader, "center");
+    shockTimeLoc = GetShaderLocation(shader, "shockTime");
+    aspectRatioLoc = GetShaderLocation(shader, "aspectRatio");
+
+    float aspectRatio = (float)GetScreenWidth() / (float)GetScreenHeight();
+    SetShaderValue(shader, aspectRatioLoc, &aspectRatio, SHADER_UNIFORM_FLOAT);
+
     renderTexture = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
 
     world.cm = &cm;
@@ -47,6 +64,25 @@ public:
     cm.Update(dt);
 
     float time = GetTime();
+
+    if (IsKeyPressed(KEY_SPACE)) {
+      shockTime = 0.0f;
+      Vector2 targetPos = player->position;
+      Vector2 targetScreenPos = GetWorldToScreen2D(targetPos, cm.GetCamera());
+      shockCenter.x = (float)(targetScreenPos.x / GetScreenWidth());
+      shockCenter.y = (float)(targetScreenPos.y / GetScreenHeight());
+
+      SetShaderValue(shader, centerLoc, &shockCenter, SHADER_UNIFORM_VEC2);
+
+      std::cout << "Shockwave triggered at: " << shockCenter.x << ", "
+                << shockCenter.y << std::endl;
+    }
+
+    if (shockTime < 1.0f) {
+      shockTime += dt;
+      SetShaderValue(shader, shockTimeLoc, &shockTime, SHADER_UNIFORM_FLOAT);
+    }
+
     SetShaderValue(shader, timeLoc, &time, SHADER_UNIFORM_FLOAT);
 
     if (IsKeyPressed(KEY_TAB)) {
