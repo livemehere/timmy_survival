@@ -25,4 +25,5 @@ Vector2 GetRandomArroundPosition(Vector2 from, float minRadius,
           from.y + std::sin(radian) * distance};
 }
 
+bool CheckChance(float chance) { return GetRandom(0.0f, 1.0f) < chance; }
 } // namespace MathUtils
