@@ -55,6 +55,8 @@ public:
 
     cm.SetTarget(&player->position);
     GenEnemy(10);
+
+    world.gameManager = this;
   }
 
   void GenEnemy(int count) {
@@ -65,7 +67,8 @@ public:
     }
   }
 
-  void AddShock(Vector2 screenPosition) {
+  void AddShock(Vector2 absolutePos) {
+    Vector2 screenPosition = GetWorldToScreen2D(absolutePos, cm.GetCamera());
     int selectedIndex = -1;
     float oldestTime = -1.0f;
 

@@ -1,4 +1,5 @@
 #include "Prefabs.hpp"
+#include "../Managers/GameManager.hpp";
 #include "Components/CircleCollider.hpp"
 #include "Components/EnemyAI.hpp"
 #include "Components/FireWeapon.hpp"
@@ -44,6 +45,7 @@ GameObject *CreateKnight(World &world, Vector2 position, GameObject *target) {
   // TODO: drop item with random chance on death
   health->onDeath = [knight]() {
     std::cout << knight->name << " has died!" << std::endl;
+    knight->world->gameManager->AddShock(knight->position);
   };
 
   // Body sprite

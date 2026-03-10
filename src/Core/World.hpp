@@ -9,10 +9,13 @@
 #include <string>
 #include <vector>
 
+class GameManager;
+
 class World {
 public:
   std::vector<std::shared_ptr<GameObject>> objects;
   CameraManager *cm = nullptr;
+  GameManager *gameManager = nullptr;
 
   GameObject *CreateObject(std::string name);
   void Update(float dt);
