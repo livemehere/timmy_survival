@@ -6,24 +6,25 @@
 #include "CameraManager.hpp"
 #include "ResourceManager.hpp"
 #include "raylib.h"
-#include <iostream>
 
 class GameManager {
 public:
   World world;
   GameObject *player;
   CameraManager cm;
-  Shader shader = {0};
 
+  //--- shader related variables ---
+  Shader shader = {0};
   int timeLoc;
-  int centerLoc;
-  int shockTimeLoc;
+  int centresLoc;
+  int timesLoc;
   int aspectRatioLoc;
 
-  float shockTime = 999.0f;
-  Vector2 shockCenter = {0.0f, 0.0f};
-
+  static const int NUM_SHOCKWAVES = 20;
+  Vector2 shockCentres[NUM_SHOCKWAVES];
+  float shockTimes[NUM_SHOCKWAVES];
   RenderTexture2D renderTexture;
+  // ---- shader end ----
 
   void Init() {
 
@@ -33,9 +34,15 @@ public:
 
     // Get shader uniform locations
     timeLoc = GetShaderLocation(shader, "time");
-    centerLoc = GetShaderLocation(shader, "center");
-    shockTimeLoc = GetShaderLocation(shader, "shockTime");
+    centresLoc = GetShaderLocation(shader, "centres");
+    timesLoc = GetShaderLocation(shader, "times");
     aspectRatioLoc = GetShaderLocation(shader, "aspectRatio");
+
+    // initialize shockwave data
+    for (int i = 0; i < NUM_SHOCKWAVES; i++) {
+      shockTimes[i] = 999.0f;
+      shockCentres[i] = {0.0f, 0.0f};
+    }
 
     float aspectRatio = (float)GetScreenWidth() / (float)GetScreenHeight();
     SetShaderValue(shader, aspectRatioLoc, &aspectRatio, SHADER_UNIFORM_FLOAT);
@@ -58,6 +65,32 @@ public:
     }
   }
 
+  void AddShock(Vector2 screenPosition) {
+    int selectedIndex = -1;
+    float oldestTime = -1.0f;
+
+    for (int i = 0; i < NUM_SHOCKWAVES; i++) {
+      if (shockTimes[i] >= 1.0f) {
+        selectedIndex = i;
+        break;
+      }
+
+      if (shockTimes[i] > oldestTime) {
+        oldestTime = shockTimes[i];
+        selectedIndex = i;
+      }
+    }
+
+    if (selectedIndex < 0) {
+      return;
+    }
+
+    shockTimes[selectedIndex] = 0.0f;
+    shockCentres[selectedIndex].x = screenPosition.x / (float)GetScreenWidth();
+    shockCentres[selectedIndex].y =
+        1.0f - (screenPosition.y / (float)GetScreenHeight());
+  }
+
   void Update(float dt) {
     world.Update(dt);
     world.ResolveCollisions();
@@ -65,23 +98,23 @@ public:
 
     float time = GetTime();
 
-    if (IsKeyPressed(KEY_SPACE)) {
-      shockTime = 0.0f;
-      Vector2 targetPos = player->position;
-      Vector2 targetScreenPos = GetWorldToScreen2D(targetPos, cm.GetCamera());
-      shockCenter.x = (float)(targetScreenPos.x / GetScreenWidth());
-      shockCenter.y = (float)(targetScreenPos.y / GetScreenHeight());
+    // if (IsKeyPressed(KEY_SPACE)) {
+    //   Vector2 randomScreenPos = {
+    //       (float)GetRandomValue(0, GetScreenWidth() - 1),
+    //       (float)GetRandomValue(0, GetScreenHeight() - 1)};
+    //   AddShock(randomScreenPos);
+    // }
 
-      SetShaderValue(shader, centerLoc, &shockCenter, SHADER_UNIFORM_VEC2);
-
-      std::cout << "Shockwave triggered at: " << shockCenter.x << ", "
-                << shockCenter.y << std::endl;
+    for (int i = 0; i < NUM_SHOCKWAVES; i++) {
+      if (shockTimes[i] < 1.0f) {
+        shockTimes[i] += dt;
+      }
     }
 
-    if (shockTime < 1.0f) {
-      shockTime += dt;
-      SetShaderValue(shader, shockTimeLoc, &shockTime, SHADER_UNIFORM_FLOAT);
-    }
+    SetShaderValueV(shader, centresLoc, shockCentres, SHADER_UNIFORM_VEC2,
+                    NUM_SHOCKWAVES);
+    SetShaderValueV(shader, timesLoc, shockTimes, SHADER_UNIFORM_FLOAT,
+                    NUM_SHOCKWAVES);
 
     SetShaderValue(shader, timeLoc, &time, SHADER_UNIFORM_FLOAT);
 
