@@ -19,6 +19,7 @@ public:
 
   GameObject *CreateObject(std::string name);
   void Update(float dt);
+  void DrawBg();
   void Draw();
   std::vector<Collider *> GetAllColliders();
 

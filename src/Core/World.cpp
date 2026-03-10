@@ -36,7 +36,30 @@ void World::Update(float dt) {
                 objects.end());
 }
 
+void World::DrawBg() {
+  static int gridSize = 64;
+  Camera2D camera = cm->GetCamera();
+
+  Vector2 topLeft = GetScreenToWorld2D({0.0f, 0.0f}, camera);
+  Vector2 bottomRight = GetScreenToWorld2D(
+      {(float)GetScreenWidth(), (float)GetScreenHeight()}, camera);
+
+  float startX = std::floor(topLeft.x / gridSize) * gridSize;
+  float startY = std::floor(topLeft.y / gridSize) * gridSize;
+
+  for (float x = startX; x <= bottomRight.x + gridSize; x += gridSize) {
+    DrawLineV({x, topLeft.y - gridSize}, {x, bottomRight.y + gridSize},
+              Fade(GRAY, 0.2f));
+  }
+
+  for (float y = startY; y <= bottomRight.y + gridSize; y += gridSize) {
+    DrawLineV({topLeft.x - gridSize, y}, {bottomRight.x + gridSize, y},
+              Fade(GRAY, 0.2f));
+  }
+}
+
 void World::Draw() {
+  DrawBg();
   for (auto &obj : objects) {
     obj->Draw();
   }
