@@ -28,7 +28,7 @@ public:
   // ---- shader end ----
 
   // Game State
-  int coint = 0;
+  int coin = 0;
 
   void Init() {
 
@@ -149,7 +149,7 @@ public:
       obj->DrawUI();
     }
 
-    DrawText(TextFormat("Coins: %d", coint), 10, 50, 20, GOLD);
+    DrawText(TextFormat("Coins: %d", coin), 10, 50, 20, GOLD);
   }
 
   void Draw() {
@@ -187,5 +187,5 @@ public:
     }
   }
 
-  void AddCoin(int amount) { coint += amount; }
+  void AddCoin(int amount) { coin += amount; }
 };
