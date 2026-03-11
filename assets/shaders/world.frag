@@ -11,7 +11,7 @@ const float MAX_SHOCKWAVE_TIME = 1.0; // Wave duration (seconds)
 const int NUM_SHOCKWAVES = 20; // Number of simultaneous wave slots
 
 const float WAVE_MAX_RADIUS = 0.5; // Maximum radius the wave spreads (UV ratio)
-const float WAVE_RING_WIDTH = 0.05; // Ring width (larger = wider)
+const float WAVE_RING_WIDTH = 0.08; // Ring width (larger = wider)
 const float WAVE_STRENGTH = 0.1; // Distortion strength (larger = more refraction)
 const float WAVE_FADE_IN = 0.05; // Fade-in period right after start (0-1 normalized time)
 const float WAVE_FADE_OUT_START = 0.5; // Fade-out start point
