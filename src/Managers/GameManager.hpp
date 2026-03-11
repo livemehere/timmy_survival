@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../Core/Components/DamageText.hpp"
 #include "../Core/Prefabs.hpp"
 #include "../Core/World.hpp"
 #include "../Utils/MathUtils.hpp"
@@ -55,8 +56,14 @@ public:
 
     cm.SetTarget(&player->position);
     GenEnemy(10);
+    DevGen();
 
     world.gameManager = this;
+  }
+
+  void DevGen() {
+    // auto obj = world.CreateObject("text");
+    // obj->AddComponent<DamageText>("Hello World!", RED, 30);
   }
 
   void GenEnemy(int count) {
@@ -131,7 +138,13 @@ public:
     }
   }
 
-  void DrawUI() { DrawText("Use WASD to move", 10, 30, 20, DARKGRAY); }
+  void DrawUI() {
+    DrawText("Use WASD to move", 10, 30, 20, DARKGRAY);
+
+    for (auto &obj : world.objects) {
+      obj->DrawUI();
+    }
+  }
 
   void Draw() {
 

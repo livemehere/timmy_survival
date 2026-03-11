@@ -21,6 +21,7 @@ public:
   void Update(float dt);
   void DrawBg();
   void Draw();
+  void DrawUI();
   std::vector<Collider *> GetAllColliders();
 
   GameObject *GetObjectByName(std::string name);

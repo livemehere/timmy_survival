@@ -65,6 +65,12 @@ void World::Draw() {
   }
 }
 
+void World::DrawUI() {
+  for (auto &obj : objects) {
+    obj->DrawUI();
+  }
+}
+
 std::vector<Collider *> World::GetAllColliders() {
   std::vector<Collider *> colliders;
   for (auto &obj : objects) {

@@ -8,6 +8,7 @@
 #include "Components/PlayerController.hpp"
 #include "Components/SpriteRenderer.hpp"
 #include "GameObject.hpp"
+#include <string>
 
 namespace Prefabs {
 GameObject *CreatePlayer(World &world, Vector2 position) {
@@ -43,9 +44,14 @@ GameObject *CreateKnight(World &world, Vector2 position, GameObject *target) {
   knight->AddComponent<SpriteRenderer>();
   auto health = knight->AddComponent<Health>(3.0f);
   // TODO: drop item with random chance on death
-  health->onDeath = [knight]() {
-    std::cout << knight->name << " has died!" << std::endl;
+  health->onDeath = [knight, &world]() {
     knight->world->gameManager->AddShock(knight->position);
+  };
+
+  health->onDamage = [knight, &world](float damage) {
+    auto obj = world.CreateObject("text");
+    obj->position = knight->position;
+    obj->AddComponent<DamageText>(std::to_string((int)damage), RED, 16);
   };
 
   // Body sprite

@@ -17,6 +17,7 @@ public:
   float invincibilityTimer = 0.0f;
 
   std::function<void()> onDeath;
+  std::function<void(float damage)> onDamage;
 
   Timer hitTimer = Timer(0.0f, false);
   float bounceScale = 0.15f;
@@ -51,6 +52,10 @@ public:
     hp -= damage;
     invincibilityTimer = invincibilityTime;
     hitTimer.Reset(0.1f);
+
+    if (onDamage) {
+      onDamage(damage);
+    }
 
     if (MathUtils::GetRandom(0, 1) == 0) {
       squashDirX = 1.0f;

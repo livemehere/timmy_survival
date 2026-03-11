@@ -11,5 +11,6 @@ public:
   virtual ~Component() = default;
   virtual void Update(float dt) {}
   virtual void Draw() {}
+  virtual void DrawUI() {}
   virtual void OnTriggerEnter(Collider *other) {}
 };

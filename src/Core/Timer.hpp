@@ -5,6 +5,7 @@ public:
   float targetTime;
   float currentTime;
   bool isLooping;
+
   Timer(float target, bool loop = true) {
     targetTime = target;
     currentTime = 0.0f;
@@ -12,6 +13,7 @@ public:
   }
 
   bool Update(float dt) {
+
     currentTime += dt;
 
     if (currentTime >= targetTime) {

@@ -60,6 +60,12 @@ public:
     DrawPos();
   }
 
+  void DrawUI() {
+    for (auto &comp : components) {
+      comp->DrawUI();
+    }
+  }
+
   void DrawPos() {}
 
   void Destroy() { isAlive = false; }
