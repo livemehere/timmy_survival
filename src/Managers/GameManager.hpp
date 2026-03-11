@@ -27,6 +27,9 @@ public:
   RenderTexture2D renderTexture;
   // ---- shader end ----
 
+  // Game State
+  int coint = 0;
+
   void Init() {
 
     ResourceManager::GetInstance().GetTexture("../assets/source.png");
@@ -55,6 +58,7 @@ public:
     player = Prefabs::CreatePlayer(world, {0, 0});
 
     cm.SetTarget(&player->position);
+
     GenEnemy(10);
     DevGen();
 
@@ -144,6 +148,8 @@ public:
     for (auto &obj : world.objects) {
       obj->DrawUI();
     }
+
+    DrawText(TextFormat("Coins: %d", coint), 10, 50, 20, GOLD);
   }
 
   void Draw() {
@@ -180,4 +186,6 @@ public:
       shader.id = 0;
     }
   }
+
+  void AddCoin(int amount) { coint += amount; }
 };

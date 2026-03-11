@@ -9,6 +9,7 @@ public:
   GameObject *gameObject = nullptr;
 
   virtual ~Component() = default;
+  virtual void Start() {}
   virtual void Update(float dt) {}
   virtual void Draw() {}
   virtual void DrawUI() {}

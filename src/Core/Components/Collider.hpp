@@ -2,6 +2,7 @@
 
 #include "../Component.hpp"
 #include "raylib.h"
+#include <functional>
 
 enum class ColliderType { BOX, CIRCLE };
 
@@ -18,8 +19,12 @@ public:
   bool isTrigger = false;
   float mass = 1.0f;
 
-  Collider(ColliderType type, Vector2 offset) : type(type), offset(offset) {}
-  virtual ~Collider() = default;
+  std::function<void(Collider *other)> onTrggerEnter;
+
+  Collider(ColliderType type, Vector2 offset);
+  ~Collider();
+
+  void Start() override;
 
   static CollisionRatios GetResponseRatios(Collider *a, Collider *b) {
     // this case not trigger, because in `World` handle if one of them is

@@ -71,23 +71,12 @@ void World::DrawUI() {
   }
 }
 
-std::vector<Collider *> World::GetAllColliders() {
-  std::vector<Collider *> colliders;
-  for (auto &obj : objects) {
-    auto col = obj->GetComponent<Collider>();
-    if (col)
-      colliders.push_back(col);
-  }
-  return colliders;
-}
-
 void World::ResolveCollisions() {
-  auto colliders = GetAllColliders();
 
-  for (size_t i = 0; i < colliders.size(); i++) {
-    for (size_t j = i + 1; j < colliders.size(); j++) {
-      Collider *a = colliders[i];
-      Collider *b = colliders[j];
+  for (size_t i = 0; i < activeColliders.size(); i++) {
+    for (size_t j = i + 1; j < activeColliders.size(); j++) {
+      Collider *a = activeColliders[i];
+      Collider *b = activeColliders[j];
 
       if (a->type == ColliderType::CIRCLE && b->type == ColliderType::CIRCLE) {
         ResolveCircleCircleCollision(static_cast<CircleCollider *>(a),
@@ -200,5 +189,12 @@ void World::HandleTriggerEvent(Collider *a, Collider *b) {
 
   for (auto &comp : b->gameObject->components) {
     comp->OnTriggerEnter(a);
+  }
+
+  if (a->onTrggerEnter) {
+    a->onTrggerEnter(b);
+  }
+  if (b->onTrggerEnter) {
+    b->onTrggerEnter(a);
   }
 }

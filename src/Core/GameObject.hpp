@@ -14,6 +14,7 @@ enum class Layer {
   ENEMY = 2,
   PROJECTILE = 3,
   UI = 4,
+  ITEM = 5,
 };
 
 class GameObject {
@@ -35,6 +36,7 @@ public:
     auto comp = std::make_shared<T>(std::forward<Args>(args)...);
     comp->gameObject = this;
     components.push_back(comp);
+    comp->Start();
     return comp.get();
   }
 
@@ -47,6 +49,12 @@ public:
     return nullptr;
   }
 
+  void Start() {
+    for (auto &comp : components) {
+      comp->Start();
+    }
+  }
+
   void Update(float dt) {
     for (auto &comp : components) {
       comp->Update(dt);
@@ -57,7 +65,6 @@ public:
     for (auto &comp : components) {
       comp->Draw();
     }
-    DrawPos();
   }
 
   void DrawUI() {
@@ -65,8 +72,6 @@ public:
       comp->DrawUI();
     }
   }
-
-  void DrawPos() {}
 
   void Destroy() { isAlive = false; }
 };

@@ -14,6 +14,7 @@ class GameManager;
 class World {
 public:
   std::vector<std::shared_ptr<GameObject>> objects;
+  std::vector<Collider *> activeColliders;
   CameraManager *cm = nullptr;
   GameManager *gameManager = nullptr;
 
@@ -22,9 +23,15 @@ public:
   void DrawBg();
   void Draw();
   void DrawUI();
-  std::vector<Collider *> GetAllColliders();
 
   GameObject *GetObjectByName(std::string name);
+
+  void RegisterCollider(Collider *col) { activeColliders.push_back(col); }
+  void UnregisterCollider(Collider *col) {
+    activeColliders.erase(
+        std::remove(activeColliders.begin(), activeColliders.end(), col),
+        activeColliders.end());
+  }
   void ResolveCollisions();
   void ResolveCircleCircleCollision(CircleCollider *a, CircleCollider *b);
   void ResolveBoxBoxCollision(BoxCollider *a, BoxCollider *b);
