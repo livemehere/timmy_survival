@@ -16,7 +16,7 @@ GameObject *CreatePlayer(World &world, Vector2 position) {
   GameObject *player = world.CreateObject("player1");
   player->position = position;
   player->AddComponent<CircleCollider>(8.0f);
-  player->AddComponent<PlayerController>(50.0f);
+  player->AddComponent<PlayerController>(100.0f);
 
   // Body sprite
   auto sprite = player->AddComponent<SpriteRenderer>();
