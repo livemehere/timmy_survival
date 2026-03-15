@@ -1,13 +1,14 @@
 #include "Prefabs.hpp"
 #include "../Components/CircleCollider.hpp"
-#include "../Components/DamageText.hpp"
 #include "../Components/EnemyAI.hpp"
 #include "../Components/FireWeapon.hpp"
 #include "../Components/Health.hpp"
-#include "../Components/Knockback.hpp"
+#include "../Components/Lifetime.hpp"
 #include "../Components/Magnet.hpp"
 #include "../Components/PlayerController.hpp"
 #include "../Components/SpriteRenderer.hpp"
+#include "../Components/TextRenderer.hpp"
+#include "../Components/Velocity.hpp"
 #include "../Core/GameObject.hpp"
 #include "../Managers/GameManager.hpp"
 #include <string>
@@ -37,7 +38,6 @@ GameObject *CreatePlayer(World &world, Vector2 position) {
   magnetCollider->isTrigger = true;
   magnetCollider->onTriggerEnter.AddListener([player](Collider *other) {
     if (other->gameObject->layer == Layer::ITEM) {
-      std::cout << "item enter magnet range" << std::endl;
       auto magnet = other->gameObject->GetComponent<Magnet>();
       if (magnet) {
         magnet->targetPos = &(player->position);
@@ -53,7 +53,7 @@ GameObject *CreateKnight(World &world, Vector2 position, GameObject *target) {
   knight->layer = Layer::ENEMY;
   knight->position = position;
 
-  knight->AddComponent<Knockback>();
+  knight->AddComponent<Velocity>(Vector2{0.0f, 0.0f}, 15.0f);
   knight->AddComponent<CircleCollider>(8.0f);
   knight->AddComponent<EnemyAI>(target, 35.0f);
   knight->AddComponent<SpriteRenderer>();
@@ -66,7 +66,10 @@ GameObject *CreateKnight(World &world, Vector2 position, GameObject *target) {
   health->onDamage = [knight, &world](float damage) {
     auto obj = world.CreateObject("text");
     obj->position = knight->position;
-    obj->AddComponent<DamageText>(std::to_string((int)damage), RED, 16);
+    obj->AddComponent<TextRenderer>(std::to_string((int)damage), RED, 20, 1.0f,
+                                    true, true, BLACK, 2.0f, true);
+    obj->AddComponent<Velocity>(Vector2{0.0f, -100.0f}, 3.0f);
+    obj->AddComponent<Lifetime>(1.0f);
   };
 
   // Body sprite

@@ -6,6 +6,8 @@
 Velocity::Velocity(Vector2 velocity, float damping)
     : velocity(velocity), damping(damping) {}
 
+void Velocity::Apply(Vector2 force) { velocity = force; }
+
 void Velocity::Update(float dt) {
   if (velocity.x == 0.0f && velocity.y == 0.0f) {
     return;

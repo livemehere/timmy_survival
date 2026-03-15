@@ -5,6 +5,8 @@
 #include "../Core/GameObject.hpp"
 #include "PlayerController.hpp"
 
+PlayerController::PlayerController(float speed) : speed(speed) {}
+
 void PlayerController::Update(float dt) {
   Vector2 movement = {0, 0};
   if (IsKeyDown(KEY_W))

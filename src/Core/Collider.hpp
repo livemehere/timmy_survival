@@ -13,6 +13,8 @@ struct CollisionRatios {
 
 class Collider : public Component {
 public:
+  inline static bool debugMode = false;
+
   ColliderType type;
   Vector2 offset = {0, 0};
   bool isStatic = false;
@@ -27,8 +29,6 @@ public:
   void Start() override;
 
   static CollisionRatios GetResponseRatios(Collider *a, Collider *b) {
-    // this case not trigger, because in `World` handle if one of them is
-    // `isTrigger`.
     if (a->isTrigger || b->isTrigger) {
       return {0.0f, 0.0f};
     };
