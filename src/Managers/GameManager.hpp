@@ -1,22 +1,27 @@
 #pragma once
 
-#include "../Core/Components/DamageText.hpp"
-#include "../Core/Prefabs.hpp"
 #include "../Core/World.hpp"
+#include "../Prefabs/Prefabs.hpp"
 #include "../Utils/MathUtils.hpp"
 #include "CameraManager.hpp"
-#include "ResourceManager.hpp"
 #include "raylib.h"
 
 class GameManager {
+private:
+  GameManager() {}
+  ~GameManager() {}
+
 public:
-  World world;
-  GameObject *player;
-  CameraManager cm;
+  static GameManager &Get() {
+    static GameManager instance;
+    return instance;
+  }
+
+  GameManager(const GameManager &) = delete;
+  GameManager &operator=(const GameManager &) = delete;
 
   //--- shader related variables ---
   Shader shader = {0};
-  int timeLoc;
   int centresLoc;
   int timesLoc;
   int aspectRatioLoc;
@@ -28,16 +33,16 @@ public:
   // ---- shader end ----
 
   // Game State
+  World world;
+  GameObject *player;
+  float gameSpeed = 1.0f;
   int coin = 0;
 
   void Init() {
 
-    ResourceManager::GetInstance().GetTexture("../assets/source.png");
-
     shader = LoadShader(nullptr, "../assets/shaders/world.frag");
 
     // Get shader uniform locations
-    timeLoc = GetShaderLocation(shader, "time");
     centresLoc = GetShaderLocation(shader, "centres");
     timesLoc = GetShaderLocation(shader, "times");
     aspectRatioLoc = GetShaderLocation(shader, "aspectRatio");
@@ -53,22 +58,15 @@ public:
 
     renderTexture = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
 
-    world.cm = &cm;
-
+    // player setup
     player = Prefabs::CreatePlayer(world, {0, 0});
+    CameraManager::Get().SetTarget(&player->position);
 
-    cm.SetTarget(&player->position);
-
-    GenEnemy(10);
+    // for development testing
     DevGen();
-
-    world.gameManager = this;
   }
 
-  void DevGen() {
-    // auto obj = world.CreateObject("text");
-    // obj->AddComponent<DamageText>("Hello World!", RED, 30);
-  }
+  void DevGen() { GenEnemy(10); }
 
   void GenEnemy(int count) {
     for (int i = 0; i < count; i++) {
@@ -78,11 +76,30 @@ public:
     }
   }
 
+  void HandleGlobalEvents() {
+    if (IsKeyPressed(KEY_TAB)) {
+      int randomIdx = GetRandomValue(0, world.objects.size() - 1);
+      auto &randomTarget = world.objects[randomIdx];
+      CameraManager::Get().SetTarget(&randomTarget->position);
+    }
+    if (IsKeyPressed(KEY_R)) {
+      GenEnemy(20);
+    }
+    if (IsKeyPressed(KEY_LEFT)) {
+      gameSpeed = std::max(0.1f, gameSpeed - 0.1f);
+    }
+    if (IsKeyPressed(KEY_RIGHT)) {
+      gameSpeed = std::min(5.0f, gameSpeed + 0.1f);
+    }
+  }
+
   void AddShock(Vector2 absolutePos) {
-    Vector2 screenPosition = GetWorldToScreen2D(absolutePos, cm.GetCamera());
+    Vector2 screenPosition =
+        GetWorldToScreen2D(absolutePos, CameraManager::Get().GetCamera());
     int selectedIndex = -1;
     float oldestTime = -1.0f;
 
+    // find available shockwave slot or the oldest one
     for (int i = 0; i < NUM_SHOCKWAVES; i++) {
       if (shockTimes[i] >= 1.0f) {
         selectedIndex = i;
@@ -105,41 +122,29 @@ public:
         1.0f - (screenPosition.y / (float)GetScreenHeight());
   }
 
-  void Update(float dt) {
-    world.Update(dt);
+  void Update() {
+    float dt = GetFrameTime();
+    float scaledDt = dt * gameSpeed;
+
+    // world update
+    world.Update(scaledDt);
     world.ResolveCollisions();
-    cm.Update(dt);
 
-    float time = GetTime();
+    // camera update
+    CameraManager::Get().Update(dt);
 
-    // if (IsKeyPressed(KEY_SPACE)) {
-    //   Vector2 randomScreenPos = {
-    //       (float)GetRandomValue(0, GetScreenWidth() - 1),
-    //       (float)GetRandomValue(0, GetScreenHeight() - 1)};
-    //   AddShock(randomScreenPos);
-    // }
-
+    // shockwave update
     for (int i = 0; i < NUM_SHOCKWAVES; i++) {
       if (shockTimes[i] < 1.0f) {
         shockTimes[i] += dt;
       }
     }
-
     SetShaderValueV(shader, centresLoc, shockCentres, SHADER_UNIFORM_VEC2,
                     NUM_SHOCKWAVES);
     SetShaderValueV(shader, timesLoc, shockTimes, SHADER_UNIFORM_FLOAT,
                     NUM_SHOCKWAVES);
 
-    SetShaderValue(shader, timeLoc, &time, SHADER_UNIFORM_FLOAT);
-
-    if (IsKeyPressed(KEY_TAB)) {
-      int randomIdx = GetRandomValue(0, world.objects.size() - 1);
-      auto &randomTarget = world.objects[randomIdx];
-      cm.SetTarget(&randomTarget->position);
-    }
-    if (IsKeyPressed(KEY_R)) {
-      GenEnemy(20);
-    }
+    HandleGlobalEvents();
   }
 
   void DrawUI() {
@@ -156,10 +161,10 @@ public:
 
     BeginTextureMode(renderTexture);
     ClearBackground(RAYWHITE);
-    BeginMode2D(cm.GetCamera());
+    BeginMode2D(CameraManager::Get().GetCamera());
     DrawText("Map", 0, 0, 40, BLACK);
     world.Draw();
-    cm.Draw();
+    CameraManager::Get().Draw();
     EndMode2D();
     EndTextureMode();
 
