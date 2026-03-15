@@ -1,10 +1,7 @@
 #include "Velocity.hpp"
 
-#include "../Core/GameObject.hpp"
+#include "../../Core/GameObject.hpp"
 #include "raymath.h"
-
-Velocity::Velocity(Vector2 velocity, float damping)
-    : velocity(velocity), damping(damping) {}
 
 void Velocity::Apply(Vector2 force) { velocity = force; }
 

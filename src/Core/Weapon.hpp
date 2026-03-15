@@ -1,23 +1,14 @@
 #pragma once
 
 #include "Component.hpp"
-#include "Timer.hpp"
 
 class Weapon : public Component {
 public:
-  Timer timer;
   float damage;
 
-  Weapon(float damage, float cooldown)
-      : timer(cooldown, true), damage(damage) {}
+  explicit Weapon(float damage) : damage(damage) {}
 
-  void Update(float dt) override {
-    timer.Update(dt);
-
-    if (timer.DidCompleteThisFrame()) {
-      Activate();
-    }
-  }
+  void Update(float dt) override = 0;
 
   virtual void Activate() = 0;
 };

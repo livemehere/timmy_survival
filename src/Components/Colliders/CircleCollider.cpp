@@ -1,8 +1,8 @@
 #include "CircleCollider.hpp"
-#include "raylib.h"
 
-CircleCollider::CircleCollider(float r, Vector2 offset)
-    : Collider(ColliderType::CIRCLE, offset), radius(r) {}
+#include "../../Core/GameObject.hpp"
+#include "raylib.h"
+#include "raymath.h"
 
 Vector2 CircleCollider::GetCenter() const {
   return Vector2Add(gameObject->position, offset);

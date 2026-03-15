@@ -7,7 +7,7 @@ class Lifetime : public Component {
 public:
   Timer timer;
 
-  explicit Lifetime(float duration);
+  explicit Lifetime(float duration) : timer(duration, false) {}
 
   void Update(float dt) override;
 };

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Core/Component.hpp"
+#include "../../Core/Component.hpp"
 #include "raylib.h"
 #include <string>
 

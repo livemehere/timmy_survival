@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Core/Component.hpp"
-#include "../Core/Timer.hpp"
+#include "../../Core/Component.hpp"
+#include "../../Core/Timer.hpp"
 #include "raylib.h"
 #include <string>
 #include <unordered_map>

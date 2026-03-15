@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Components/BoxCollider.hpp"
-#include "../Components/CircleCollider.hpp"
+#include "../Components/Colliders/BoxCollider.hpp"
+#include "../Components/Colliders/CircleCollider.hpp"
 #include "Collider.hpp"
 #include "GameObject.hpp"
 #include <memory>

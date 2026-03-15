@@ -1,9 +1,6 @@
 #include "BoxCollider.hpp"
-#include "../Core/GameObject.hpp"
+#include "../../Core/GameObject.hpp"
 #include "raylib.h"
-
-BoxCollider::BoxCollider(float width, float height, Vector2 offset)
-    : Collider(ColliderType::BOX, offset), size({width, height}) {}
 
 Rectangle BoxCollider::GetRect() {
   return {gameObject->position.x + offset.x, gameObject->position.y + offset.y,

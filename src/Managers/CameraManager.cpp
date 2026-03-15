@@ -9,10 +9,6 @@ constexpr float kMinZoom = 0.1f;
 constexpr float kMaxZoom = 3.0f;
 } // namespace
 
-CameraManager::CameraManager() = default;
-
-CameraManager::~CameraManager() = default;
-
 CameraManager &CameraManager::Get() {
   static CameraManager instance;
   return instance;

@@ -21,8 +21,8 @@ private:
   Timer shakeTimer;
   float shakeIntensity;
 
-  CameraManager();
-  ~CameraManager();
+  CameraManager() = default;
+  ~CameraManager() = default;
 
 public:
   static CameraManager &Get();

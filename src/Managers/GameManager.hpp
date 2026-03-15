@@ -5,8 +5,8 @@
 
 class GameManager {
 private:
-  GameManager();
-  ~GameManager();
+  GameManager() = default;
+  ~GameManager() = default;
 
 public:
   static GameManager &Get();

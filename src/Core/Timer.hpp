@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+
 class Timer {
 private:
   float targetTime = 0.0f;
@@ -11,7 +13,9 @@ private:
 public:
   Timer() = default;
 
-  explicit Timer(float target, bool loop = false);
+  explicit Timer(float target, bool loop = false)
+      : targetTime(std::max(0.0f, target)), isLooping(loop),
+        isRunning(targetTime > 0.0f) {}
 
   void Update(float dt);
 

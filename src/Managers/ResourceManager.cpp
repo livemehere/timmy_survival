@@ -1,10 +1,6 @@
 #include "ResourceManager.hpp"
 #include <iostream>
 
-ResourceManager::ResourceManager() = default;
-
-ResourceManager::~ResourceManager() = default;
-
 ResourceManager &ResourceManager::Get() {
   static ResourceManager instance;
   return instance;

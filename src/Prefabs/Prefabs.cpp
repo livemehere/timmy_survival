@@ -1,14 +1,14 @@
 #include "Prefabs.hpp"
-#include "../Components/CircleCollider.hpp"
+#include "../Components/Colliders/CircleCollider.hpp"
 #include "../Components/EnemyAI.hpp"
-#include "../Components/FireWeapon.hpp"
 #include "../Components/Health.hpp"
 #include "../Components/Lifetime.hpp"
-#include "../Components/Magnet.hpp"
+#include "../Components/Movement/Magnet.hpp"
+#include "../Components/Movement/Velocity.hpp"
 #include "../Components/PlayerController.hpp"
-#include "../Components/SpriteRenderer.hpp"
-#include "../Components/TextRenderer.hpp"
-#include "../Components/Velocity.hpp"
+#include "../Components/Render/SpriteRenderer.hpp"
+#include "../Components/Render/TextRenderer.hpp"
+#include "../Components/Weapons/FireWeapon.hpp"
 #include "../Core/GameObject.hpp"
 #include "../Managers/GameManager.hpp"
 #include <string>
@@ -31,7 +31,7 @@ GameObject *CreatePlayer(World &world, Vector2 position) {
 
   // Weapon
   auto fireWeapon =
-      player->AddComponent<FireWeapon>(1.0f, 0.1f, 500.0f, 2.0f, 2.0f, 200.0f);
+      player->AddComponent<FireWeapon>(1.0f, 0.1f, 300.0f, 2.0f, 2.0f, 200.0f);
 
   // item magnet
   auto magnetCollider = player->AddComponent<CircleCollider>(50.0f);

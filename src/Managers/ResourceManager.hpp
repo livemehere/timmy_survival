@@ -8,8 +8,8 @@ class ResourceManager {
 private:
   std::unordered_map<std::string, Texture2D> cache;
 
-  ResourceManager();
-  ~ResourceManager();
+  ResourceManager() = default;
+  ~ResourceManager() = default;
 
   void UnloadAll();
 

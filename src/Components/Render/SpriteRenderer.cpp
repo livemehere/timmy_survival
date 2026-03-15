@@ -1,6 +1,6 @@
 #include "SpriteRenderer.hpp"
-#include "../Core/GameObject.hpp"
-#include "../Managers/ResourceManager.hpp"
+#include "../../Core/GameObject.hpp"
+#include "../../Managers/ResourceManager.hpp"
 
 void SpriteRenderer::AddAnimation(const std::string &name,
                                   const std::string &texturePath, int startX,

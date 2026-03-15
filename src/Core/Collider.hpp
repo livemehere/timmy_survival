@@ -4,6 +4,8 @@
 #include "Event.hpp"
 #include "raylib.h"
 
+class World;
+
 enum class ColliderType { BOX, CIRCLE };
 
 struct CollisionRatios {
@@ -23,10 +25,11 @@ public:
 
   Event<Collider *> onTriggerEnter;
 
-  Collider(ColliderType type, Vector2 offset);
-  ~Collider();
+  Collider(ColliderType type, Vector2 offset) : type(type), offset(offset) {}
+  ~Collider() override = default;
 
   void Start() override;
+  void OnDestroy() override;
 
   static CollisionRatios GetResponseRatios(Collider *a, Collider *b) {
     if (a->isTrigger || b->isTrigger) {

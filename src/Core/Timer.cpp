@@ -2,10 +2,6 @@
 #include <algorithm>
 #include <cmath>
 
-Timer::Timer(float target, bool loop)
-    : targetTime(std::max(0.0f, target)), isLooping(loop),
-      isRunning(targetTime > 0.0f) {}
-
 void Timer::Update(float dt) {
   completedThisFrame = false;
 

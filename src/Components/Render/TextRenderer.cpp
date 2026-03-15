@@ -1,8 +1,8 @@
 #include "TextRenderer.hpp"
 
-#include "../Core/GameObject.hpp"
-#include "../Managers/CameraManager.hpp"
-#include "Lifetime.hpp"
+#include "../../Core/GameObject.hpp"
+#include "../../Managers/CameraManager.hpp"
+#include "../Lifetime.hpp"
 #include "raymath.h"
 
 // TODO: change to use SDF based text rendering

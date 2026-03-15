@@ -1,6 +1,6 @@
 #include "World.hpp"
-#include "../Components/BoxCollider.hpp"
-#include "../Components/CircleCollider.hpp"
+#include "../Components/Colliders/BoxCollider.hpp"
+#include "../Components/Colliders/CircleCollider.hpp"
 #include "../Managers/CameraManager.hpp"
 #include "Collider.hpp"
 #include "raylib.h"

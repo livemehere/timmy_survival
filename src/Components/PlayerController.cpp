@@ -1,11 +1,9 @@
-#include "SpriteRenderer.hpp"
+#include "Render/SpriteRenderer.hpp"
 #include "raylib.h"
 #include "raymath.h"
 
 #include "../Core/GameObject.hpp"
 #include "PlayerController.hpp"
-
-PlayerController::PlayerController(float speed) : speed(speed) {}
 
 void PlayerController::Update(float dt) {
   Vector2 movement = {0, 0};

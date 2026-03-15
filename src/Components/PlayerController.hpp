@@ -6,6 +6,6 @@ class PlayerController : public Component {
 public:
   float speed;
 
-  explicit PlayerController(float speed);
+  explicit PlayerController(float speed) : speed(speed) {}
   void Update(float dt) override;
 };

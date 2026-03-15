@@ -6,10 +6,6 @@
 
 #include <algorithm>
 
-GameManager::GameManager() = default;
-
-GameManager::~GameManager() = default;
-
 GameManager &GameManager::Get() {
   static GameManager instance;
   return instance;
