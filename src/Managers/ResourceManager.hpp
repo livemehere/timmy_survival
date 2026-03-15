@@ -5,17 +5,23 @@
 #include <string>
 #include <unordered_map>
 
-// const char *GLOLBAL_TEXTURE_PATH = "../../assets/source.png";
-
 class ResourceManager {
 private:
-  std::unordered_map<std::string, Texture2D> textures;
+  std::unordered_map<std::string, Texture2D> cache;
 
   ResourceManager() {}
-  ~ResourceManager() { UnloadAll(); }
+  ~ResourceManager() {}
+
+  void UnloadAll() {
+    for (auto &pair : cache) {
+      UnloadTexture(pair.second);
+    }
+    cache.clear();
+    std::cout << "All resources unloaded." << std::endl;
+  }
 
 public:
-  static ResourceManager &GetInstance() {
+  static ResourceManager &Get() {
     static ResourceManager instance;
     return instance;
   }
@@ -23,26 +29,22 @@ public:
   ResourceManager(const ResourceManager &) = delete;
   ResourceManager &operator=(const ResourceManager &) = delete;
 
+  void Init() { GetTexture("../assets/source.png"); }
+
+  void Clear() { UnloadAll(); }
+
   Texture2D *GetTexture(const std::string &path) {
-    if (textures.find(path) == textures.end()) {
+    if (cache.find(path) == cache.end()) {
       Texture2D texture = LoadTexture(path.c_str());
       if (texture.id == 0) {
         std::cerr << "Failed to load texture: " << path << std::endl;
         return nullptr;
       }
       SetTextureFilter(texture, TEXTURE_FILTER_POINT);
-      textures[path] = texture;
+      cache[path] = texture;
       std::cout << "Loaded texture: " << path << std::endl;
     }
 
-    return &textures[path];
+    return &cache[path];
   };
-
-  void UnloadAll() {
-    for (auto &pair : textures) {
-      UnloadTexture(pair.second);
-    }
-    textures.clear();
-    std::cout << "All resources unloaded." << std::endl;
-  }
 };

@@ -3,8 +3,6 @@
 
 constexpr int screenWidth = 1600;
 constexpr int screenHeight = 900;
-constexpr int screenCenterWidth = screenWidth / 2;
-constexpr int screenCenterHeight = screenHeight / 2;
 
 int main() {
   SetConfigFlags(FLAG_VSYNC_HINT);
@@ -14,8 +12,7 @@ int main() {
   gm.Init();
 
   while (!WindowShouldClose()) {
-    float dt = GetFrameTime();
-    gm.Update(dt);
+    gm.Update();
     gm.Draw();
   }
   gm.Clear();
