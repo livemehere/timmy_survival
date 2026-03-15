@@ -27,7 +27,6 @@ GameObject *CreatePlayer(World &world, Vector2 position) {
   sprite->AddAnimation("Walk", "../assets/source.png", 192, 32, 16, 32, 4,
                        0.15f, true);
   sprite->anchorRatio = {0.5f, 0.75f};
-  sprite->Play("Idle");
 
   // Weapon
   auto fireWeapon =
@@ -56,11 +55,11 @@ GameObject *CreateKnight(World &world, Vector2 position, GameObject *target) {
   knight->AddComponent<Velocity>(Vector2{0.0f, 0.0f}, 15.0f);
   knight->AddComponent<CircleCollider>(8.0f);
   knight->AddComponent<EnemyAI>(target, 35.0f);
-  knight->AddComponent<SpriteRenderer>();
+
   auto health = knight->AddComponent<Health>(3.0f);
   health->onDeath = [knight, &world]() {
     // knight->world->gameManager->AddShock(knight->position);
-    CreateCoin(world, knight->position, nullptr);
+    CreateCoin(world, knight->position);
   };
 
   health->onDamage = [knight, &world](float damage) {
@@ -73,7 +72,7 @@ GameObject *CreateKnight(World &world, Vector2 position, GameObject *target) {
   };
 
   // Body sprite
-  auto sprite = knight->GetComponent<SpriteRenderer>();
+  auto sprite = knight->AddComponent<SpriteRenderer>();
   sprite->AddAnimation("Idle", "../assets/source.png", 128, 64, 16, 32, 2, 0.5f,
                        true);
   sprite->AddAnimation("Walk", "../assets/source.png", 192, 64, 16, 32, 4,
@@ -83,7 +82,7 @@ GameObject *CreateKnight(World &world, Vector2 position, GameObject *target) {
   return knight;
 }
 
-GameObject *CreateCoin(World &world, Vector2 position, GameObject *target) {
+GameObject *CreateCoin(World &world, Vector2 position) {
   auto coin = world.CreateObject("coin");
   coin->layer = Layer::ITEM;
   coin->position = position;

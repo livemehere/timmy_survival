@@ -56,5 +56,8 @@ GameObject *FireWeapon::FindNearestEnemy() {
 }
 
 void FireWeapon::Draw() {
-  DrawCircleLines(gameObject->position.x, gameObject->position.y, range, GREEN);
+  if (showRange) {
+    DrawCircleLines(gameObject->position.x, gameObject->position.y, range,
+                    GREEN);
+  }
 }

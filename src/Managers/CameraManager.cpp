@@ -21,7 +21,8 @@ void CameraManager::Init() {
   rotation = 0.0f;
   lerpSpeed = 5.0f;
 
-  showReticle = true;
+  // show target debug
+  showReticle = false;
   reticleSize = 20.0f;
   reticleThickness = 1.2f;
   reticleColor = LIME;

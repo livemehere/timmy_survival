@@ -10,6 +10,7 @@ public:
   float projectileLifetime;
   float projectileRadius;
   float range;
+  bool showRange = false;
 
   FireWeapon(float damage, float cooldown, float projectileSpeed,
              float projectileLifetime, float projectileRadius, float range)
