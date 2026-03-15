@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Component.hpp"
+#include "Component.hpp"
+#include "Event.hpp"
 #include "raylib.h"
-#include <functional>
 
 enum class ColliderType { BOX, CIRCLE };
 
@@ -19,7 +19,7 @@ public:
   bool isTrigger = false;
   float mass = 1.0f;
 
-  std::function<void(Collider *other)> onTrggerEnter;
+  Event<Collider *> onTriggerEnter;
 
   Collider(ColliderType type, Vector2 offset);
   ~Collider();
