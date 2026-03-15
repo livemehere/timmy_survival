@@ -5,7 +5,6 @@
 #include "raylib.h"
 #include "raymath.h"
 #include <algorithm>
-#include <iostream>
 
 constexpr float minZoom = 0.1f;
 constexpr float maxZoom = 3.0f;
@@ -13,27 +12,58 @@ constexpr float maxZoom = 3.0f;
 class CameraManager {
 private:
   Camera2D camera;
-  Vector2 *targetPos = nullptr;
-  Vector2 offsetRatio = {0.5f, 0.5f};
-  float zoom = 3.0f;
-  float rotation = 0.0f;
-  float lerpSpeed = 5.0f;
+  Vector2 *targetPos;
+  Vector2 offsetRatio;
+  float zoom;
+  float rotation;
+  float lerpSpeed;
 
   // target drawing
-  bool showReticle = true;
-  float reticleSize = 20.0f;
-  float reticleThickness = 1.2f;
-  Color reticleColor = LIME;
+  bool showReticle;
+  float reticleSize;
+  float reticleThickness;
+  Color reticleColor;
 
-  Timer shakeTimer = Timer(0.0f, false);
-  float shakeIntensity = 0.0f;
+  Timer shakeTimer;
+  float shakeIntensity;
+
+  CameraManager() = default;
+  ~CameraManager() = default;
 
 public:
-  CameraManager() {
+  static CameraManager &Get() {
+    static CameraManager instance;
+    return instance;
+  }
+
+  CameraManager(const CameraManager &) = delete;
+  CameraManager &operator=(const CameraManager &) = delete;
+
+  void Init() {
+    targetPos = nullptr;
+    offsetRatio = {0.5f, 0.5f};
+    zoom = 3.0f;
+    rotation = 0.0f;
+    lerpSpeed = 5.0f;
+
+    showReticle = true;
+    reticleSize = 20.0f;
+    reticleThickness = 1.2f;
+    reticleColor = LIME;
+
+    shakeIntensity = 0.0f;
+
     camera.target = {0, 0};
-    camera.offset = offsetRatio;
+    camera.offset = {GetScreenWidth() * offsetRatio.x,
+                     GetScreenHeight() * offsetRatio.y};
     camera.rotation = rotation;
     camera.zoom = zoom;
+  }
+
+  void Clear() {
+    targetPos = nullptr;
+    shakeIntensity = 0.0f;
+    shakeTimer.Reset(0.0f);
   }
 
   void Update(float dt) {
@@ -41,7 +71,6 @@ public:
     Vector2 defaultOffset = {GetScreenWidth() * offsetRatio.x,
                              GetScreenHeight() * offsetRatio.y};
     if (targetPos) {
-
       camera.target = Vector2Lerp(camera.target, *targetPos, lerpSpeed * dt);
       camera.offset = Vector2Lerp(camera.offset, defaultOffset, lerpSpeed * dt);
       camera.zoom = Lerp(camera.zoom, zoom, lerpSpeed * dt);
@@ -54,16 +83,16 @@ public:
       zoom = std::min(std::max(minZoom, zoom), maxZoom);
     }
 
-    if (!shakeTimer.Update(dt)) {
-      // if shaking...
-      Vector2 baseOffset = {GetScreenWidth() * offsetRatio.x,
-                            GetScreenHeight() * offsetRatio.y};
+    shakeTimer.Update(dt);
+
+    if (shakeTimer.IsRunning()) {
       float shakeOffsetX =
           MathUtils::GetRandom(-shakeIntensity, shakeIntensity);
       float shakeOffsetY =
           MathUtils::GetRandom(-shakeIntensity, shakeIntensity);
-      camera.offset = Vector2Add(baseOffset, {shakeOffsetX, shakeOffsetY});
+      camera.offset = Vector2Add(defaultOffset, {shakeOffsetX, shakeOffsetY});
     } else {
+      shakeIntensity = 0.0f;
       camera.offset = defaultOffset;
     }
   }
