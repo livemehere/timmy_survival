@@ -1,4 +1,5 @@
 #include "ResourceManager.hpp"
+#include <iostream>
 
 ResourceManager::ResourceManager() = default;
 
@@ -11,9 +12,9 @@ ResourceManager &ResourceManager::Get() {
 
 void ResourceManager::UnloadAll() {
   for (auto &pair : cache) {
+    std::cout << "Unloading texture: " << pair.first << std::endl;
     UnloadTexture(pair.second);
   }
-
   cache.clear();
   std::cout << "All resources unloaded." << std::endl;
 }

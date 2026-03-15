@@ -128,6 +128,12 @@ void GameManager::DrawUI() {
   }
 
   DrawText(TextFormat("Coins: %d", coin), 10, 50, 20, GOLD);
+
+  // enemy count
+  int count = 0;
+  std::vector<GameObject *> enemies = world.GetObjectsByLayer(Layer::ENEMY);
+  count = enemies.size();
+  DrawText(TextFormat("Enemies: %d", count), 10, 70, 20, RED);
 }
 
 void GameManager::Draw() {

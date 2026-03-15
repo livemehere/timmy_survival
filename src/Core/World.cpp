@@ -1,21 +1,15 @@
 #include "World.hpp"
-#include "Components/BoxCollider.hpp"
-#include "Components/CircleCollider.hpp"
-#include "Components/Collider.hpp"
+#include "../Components/BoxCollider.hpp"
+#include "../Components/CircleCollider.hpp"
+#include "../Managers/CameraManager.hpp"
+#include "Collider.hpp"
 #include "raylib.h"
 #include "raymath.h"
 #include <algorithm>
+#include <cmath>
 #include <cstddef>
 
-// TODO: improve performance to use. this is simple implementation.
-GameObject *World::GetObjectByName(std::string name) {
-  for (auto &obj : objects) {
-    if (obj->name == name) {
-      return obj.get();
-    }
-  }
-  return nullptr;
-}
+World::~World() = default;
 
 GameObject *World::CreateObject(std::string name) {
   auto obj = std::make_shared<GameObject>(name, this);
@@ -31,14 +25,18 @@ void World::Update(float dt) {
 
   objects.erase(std::remove_if(objects.begin(), objects.end(),
                                [](const std::shared_ptr<GameObject> &obj) {
-                                 return !obj->isAlive;
+                                 if (!obj->isAlive) {
+                                   obj->OnDestroy();
+                                   return true;
+                                 }
+                                 return false;
                                }),
                 objects.end());
 }
 
 void World::DrawBg() {
   static int gridSize = 64;
-  Camera2D camera = cm->GetCamera();
+  Camera2D camera = CameraManager::Get().GetCamera();
 
   Vector2 topLeft = GetScreenToWorld2D({0.0f, 0.0f}, camera);
   Vector2 bottomRight = GetScreenToWorld2D(
@@ -58,6 +56,7 @@ void World::DrawBg() {
   }
 }
 
+// affects by camera
 void World::Draw() {
   DrawBg();
   for (auto &obj : objects) {
@@ -65,10 +64,40 @@ void World::Draw() {
   }
 }
 
+// not affects by camera (UI & Text)
 void World::DrawUI() {
   for (auto &obj : objects) {
     obj->DrawUI();
   }
+}
+
+GameObject *World::GetObjectByName(std::string name) {
+  for (auto &obj : objects) {
+    if (obj->name == name) {
+      return obj.get();
+    }
+  }
+
+  return nullptr;
+}
+
+std::vector<GameObject *> World::GetObjectsByLayer(Layer layer) {
+  std::vector<GameObject *> result;
+  for (auto &obj : objects) {
+    if (obj->layer == layer) {
+      result.push_back(obj.get());
+    }
+  }
+
+  return result;
+}
+
+void World::RegisterCollider(Collider *col) { activeColliders.push_back(col); }
+
+void World::UnregisterCollider(Collider *col) {
+  activeColliders.erase(
+      std::remove(activeColliders.begin(), activeColliders.end(), col),
+      activeColliders.end());
 }
 
 void World::ResolveCollisions() {
@@ -191,10 +220,6 @@ void World::HandleTriggerEvent(Collider *a, Collider *b) {
     comp->OnTriggerEnter(a);
   }
 
-  if (a->onTrggerEnter) {
-    a->onTrggerEnter(b);
-  }
-  if (b->onTrggerEnter) {
-    b->onTrggerEnter(a);
-  }
+  a->onTriggerEnter.Invoke(b);
+  b->onTriggerEnter.Invoke(a);
 }

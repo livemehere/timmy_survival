@@ -1,5 +1,4 @@
 #include "CameraManager.hpp"
-
 #include "../Utils/MathUtils.hpp"
 #include "raymath.h"
 
@@ -8,7 +7,7 @@
 namespace {
 constexpr float kMinZoom = 0.1f;
 constexpr float kMaxZoom = 3.0f;
-}
+} // namespace
 
 CameraManager::CameraManager() = default;
 
@@ -93,25 +92,17 @@ void CameraManager::Draw() {
   float t = reticleThickness / camera.zoom;
   float gap = s * 0.3f;
 
-  DrawLineEx({pos.x - s, pos.y - s}, {pos.x - gap, pos.y - s}, t,
-             reticleColor);
-  DrawLineEx({pos.x - s, pos.y - s}, {pos.x - s, pos.y - gap}, t,
-             reticleColor);
+  DrawLineEx({pos.x - s, pos.y - s}, {pos.x - gap, pos.y - s}, t, reticleColor);
+  DrawLineEx({pos.x - s, pos.y - s}, {pos.x - s, pos.y - gap}, t, reticleColor);
 
-  DrawLineEx({pos.x + s, pos.y - s}, {pos.x + gap, pos.y - s}, t,
-             reticleColor);
-  DrawLineEx({pos.x + s, pos.y - s}, {pos.x + s, pos.y - gap}, t,
-             reticleColor);
+  DrawLineEx({pos.x + s, pos.y - s}, {pos.x + gap, pos.y - s}, t, reticleColor);
+  DrawLineEx({pos.x + s, pos.y - s}, {pos.x + s, pos.y - gap}, t, reticleColor);
 
-  DrawLineEx({pos.x - s, pos.y + s}, {pos.x - gap, pos.y + s}, t,
-             reticleColor);
-  DrawLineEx({pos.x - s, pos.y + s}, {pos.x - s, pos.y + gap}, t,
-             reticleColor);
+  DrawLineEx({pos.x - s, pos.y + s}, {pos.x - gap, pos.y + s}, t, reticleColor);
+  DrawLineEx({pos.x - s, pos.y + s}, {pos.x - s, pos.y + gap}, t, reticleColor);
 
-  DrawLineEx({pos.x + s, pos.y + s}, {pos.x + gap, pos.y + s}, t,
-             reticleColor);
-  DrawLineEx({pos.x + s, pos.y + s}, {pos.x + s, pos.y + gap}, t,
-             reticleColor);
+  DrawLineEx({pos.x + s, pos.y + s}, {pos.x + gap, pos.y + s}, t, reticleColor);
+  DrawLineEx({pos.x + s, pos.y + s}, {pos.x + s, pos.y + gap}, t, reticleColor);
 
   DrawCircleV(pos, t * 1.5f, reticleColor);
 }
