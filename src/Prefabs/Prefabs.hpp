@@ -2,8 +2,8 @@
 
 #include "raylib.h"
 
-#include "GameObject.hpp"
-#include "World.hpp"
+#include "../Core/GameObject.hpp"
+#include "../Core/World.hpp"
 
 namespace Prefabs {
 GameObject *CreatePlayer(World &world, Vector2 position);

@@ -1,14 +1,15 @@
 #include "Prefabs.hpp"
+#include "../Components/CircleCollider.hpp"
+#include "../Components/DamageText.hpp"
+#include "../Components/EnemyAI.hpp"
+#include "../Components/FireWeapon.hpp"
+#include "../Components/Health.hpp"
+#include "../Components/Knockback.hpp"
+#include "../Components/Magnet.hpp"
+#include "../Components/PlayerController.hpp"
+#include "../Components/SpriteRenderer.hpp"
+#include "../Core/GameObject.hpp"
 #include "../Managers/GameManager.hpp"
-#include "Components/CircleCollider.hpp"
-#include "Components/EnemyAI.hpp"
-#include "Components/FireWeapon.hpp"
-#include "Components/Health.hpp"
-#include "Components/Knockback.hpp"
-#include "Components/Magnet.hpp"
-#include "Components/PlayerController.hpp"
-#include "Components/SpriteRenderer.hpp"
-#include "GameObject.hpp"
 #include <string>
 
 namespace Prefabs {
@@ -34,7 +35,7 @@ GameObject *CreatePlayer(World &world, Vector2 position) {
   // item magnet
   auto magnetCollider = player->AddComponent<CircleCollider>(50.0f);
   magnetCollider->isTrigger = true;
-  magnetCollider->onTrggerEnter = [player](Collider *other) {
+  magnetCollider->onTriggerEnter.AddListener([player](Collider *other) {
     if (other->gameObject->layer == Layer::ITEM) {
       std::cout << "item enter magnet range" << std::endl;
       auto magnet = other->gameObject->GetComponent<Magnet>();
@@ -42,7 +43,7 @@ GameObject *CreatePlayer(World &world, Vector2 position) {
         magnet->targetPos = &(player->position);
       }
     }
-  };
+  });
 
   return player;
 }
@@ -87,9 +88,9 @@ GameObject *CreateCoin(World &world, Vector2 position, GameObject *target) {
   collider->isTrigger = true;
 
   auto magnet = coin->AddComponent<Magnet>();
-  magnet->onCollect = [coin, &world]() {
+  magnet->onCollect = [coin]() {
     coin->Destroy();
-    world.gameManager->AddCoin(1);
+    GameManager::Get().AddCoin(1);
   };
 
   auto sprite = coin->AddComponent<SpriteRenderer>();

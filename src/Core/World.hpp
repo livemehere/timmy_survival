@@ -10,11 +10,11 @@
 
 class World {
 public:
-  std::vector<std::shared_ptr<GameObject>> objects;
+  std::vector<std::unique_ptr<GameObject>> objects;
   std::vector<Collider *> activeColliders;
 
   World() = default;
-  ~World();
+  ~World() = default;
 
   GameObject *CreateObject(std::string name);
   void Update(float dt);

@@ -9,12 +9,11 @@
 #include <cmath>
 #include <cstddef>
 
-World::~World() = default;
-
 GameObject *World::CreateObject(std::string name) {
-  auto obj = std::make_shared<GameObject>(name, this);
-  objects.push_back(obj);
-  return obj.get();
+  auto obj = std::make_unique<GameObject>(name, this);
+  GameObject *ptr = obj.get();
+  objects.push_back(std::move(obj));
+  return ptr;
 }
 
 void World::Update(float dt) {
@@ -24,7 +23,7 @@ void World::Update(float dt) {
   }
 
   objects.erase(std::remove_if(objects.begin(), objects.end(),
-                               [](const std::shared_ptr<GameObject> &obj) {
+                               [](const std::unique_ptr<GameObject> &obj) {
                                  if (!obj->isAlive) {
                                    obj->OnDestroy();
                                    return true;

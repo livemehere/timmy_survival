@@ -24,20 +24,21 @@ public:
   Layer layer = Layer::DEFAULT;
   std::string name;
   Vector2 position = {0.0f, 0.0f};
-  std::vector<std::shared_ptr<Component>> components;
+  std::vector<std::unique_ptr<Component>> components;
   bool isAlive = true;
 
-  GameObject(std::string name, World *world) {
-    this->name = name;
-    this->world = world;
-  }
+  GameObject(std::string name, World *world) : name(name), world(world) {}
 
   template <typename T, typename... Args> T *AddComponent(Args &&...args) {
-    auto comp = std::make_shared<T>(std::forward<Args>(args)...);
-    comp->gameObject = this;
-    components.push_back(comp);
-    comp->Start();
-    return comp.get();
+    auto comp = std::make_unique<T>(std::forward<Args>(args)...);
+
+    T *ptr = comp.get();
+
+    ptr->gameObject = this;
+    components.push_back(std::move(comp));
+    ptr->Start();
+
+    return ptr;
   }
 
   template <typename T> T *GetComponent() {
@@ -70,6 +71,12 @@ public:
   void DrawUI() {
     for (auto &comp : components) {
       comp->DrawUI();
+    }
+  }
+
+  void OnDestroy() {
+    for (auto &comp : components) {
+      comp->OnDestroy();
     }
   }
 

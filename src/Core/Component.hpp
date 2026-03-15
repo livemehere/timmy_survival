@@ -14,4 +14,5 @@ public:
   virtual void Draw() {}
   virtual void DrawUI() {}
   virtual void OnTriggerEnter(Collider *other) {}
+  virtual void OnDestroy() {}
 };
