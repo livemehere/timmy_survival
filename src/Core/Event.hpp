@@ -1,22 +1,27 @@
 #pragma once
 
 #include <functional>
-#include <vector>
+#include <unordered_map>
 
 template <typename... Args> class Event {
 private:
-  std::vector<std::function<void(Args...)>> listeners;
+  int seq = 0;
+  std::unordered_map<int, std::function<void(Args...)>> listeners;
 
 public:
-  void AddListener(std::function<void(Args...)> listener) {
-    listeners.push_back(listener);
+  int AddListener(std::function<void(Args...)> listener) {
+    int id = seq++;
+    listeners[id] = listener;
+    return id;
   }
 
   void Invoke(Args... args) {
-    for (auto &listener : listeners) {
+    for (auto &[id, listener] : listeners) {
       listener(args...);
     }
   }
+
+  void RemoveListener(int id) { listeners.erase(id); }
 
   void Clear() { listeners.clear(); }
 
