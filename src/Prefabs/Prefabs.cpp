@@ -12,13 +12,35 @@
 #include "../Components/Weapons/FireWeapon.hpp"
 #include "../Core/GameObject.hpp"
 #include "../Managers/GameManager.hpp"
-#include "Animation.hpp"
+#include "Definitions/Sprites.hpp"
 #include <string>
+
+namespace {
+SpriteRenderer *ApplySpritePreset(GameObject *gameObject,
+                                  const SpritePreset &preset) {
+  auto sprite = gameObject->AddComponent<SpriteRenderer>();
+
+  for (const auto &clip : preset.clips) {
+    sprite->AddClip(clip);
+  }
+
+  sprite->scale = preset.scale;
+  sprite->anchorRatio = preset.anchorRatio;
+  sprite->offset = preset.offset;
+  sprite->tint = preset.tint;
+
+  if (!preset.defaultClipName.empty()) {
+    sprite->Play(preset.defaultClipName);
+  }
+
+  return sprite;
+}
+} // namespace
 
 namespace Prefabs {
 GameObject *CreatePlayer(World &world, Vector2 position) {
   // Core
-  GameObject *player = world.CreateObject("player1");
+  GameObject *player = world.CreateObject("player");
   player->position = position;
   player->AddComponent<CircleCollider>(8.0f);
   player->AddComponent<PlayerController>(100.0f);
@@ -36,41 +58,36 @@ GameObject *CreatePlayer(World &world, Vector2 position) {
   });
 
   // Sprite
-  auto sprite = player->AddComponent<SpriteRenderer>();
-  sprite->AddAnimation(Animation::PLAYER_IDLE);
-  sprite->AddAnimation(Animation::PLAYER_WALK);
-  sprite->anchorRatio = {0.5f, 0.75f};
+  ApplySpritePreset(player, SpritePresets::PLAYER);
 
   // Weapon Core
   auto weapon = world.CreateObject("EnergyBall");
   weapon->layer = Layer::WEAPON;
 
   // Weapon sprite
-  weapon->AddComponent<SpriteRenderer>(Animation::ENERGY_BALL,
-                                       Vector2{0.4f, 0.4f});
+  ApplySpritePreset(weapon, SpritePresets::ENERGY_BALL);
 
   // Weapon behavior
   weapon->AddComponent<Follow>(player, Vector2{-10.0f, -10.0f}, 10.0f);
   weapon->AddComponent<FireWeapon>(1.0f, 0.5f, 300.0f, 2.0f, 2.0f, 200.0f,
-                                   Animation::ENERGY_BALL, Vector2{0.4f, 0.4f});
+                                   SpriteClips::ENERGY_BALL,
+                                   Vector2{0.4f, 0.4f});
 
   return player;
 }
 
-GameObject *CreateKnight(World &world, Vector2 position, GameObject *target) {
-  GameObject *enemy = world.CreateObject("enemy");
+GameObject *CreateEnemy(World &world, Vector2 position, GameObject *target,
+                        const EnemyDefinition &definition) {
+  GameObject *enemy = world.CreateObject(definition.name);
   enemy->layer = Layer::ENEMY;
   enemy->position = position;
 
   enemy->AddComponent<Velocity>(Vector2{0.0f, 0.0f}, 15.0f);
-  enemy->AddComponent<CircleCollider>(8.0f);
-  enemy->AddComponent<EnemyAI>(target, 35.0f);
+  enemy->AddComponent<CircleCollider>(definition.colliderRadius);
+  enemy->AddComponent<EnemyAI>(target, definition.speed);
 
-  auto health = enemy->AddComponent<Health>(3.0f);
-  health->onDeath = [enemy, &world]() {
-    // knight->world->gameManager->AddShock(knight->position);
-    CreateCoin(world, enemy->position);
-  };
+  auto health = enemy->AddComponent<Health>(definition.maxHp);
+  health->onDeath = [enemy, &world]() { CreateCoin(world, enemy->position); };
 
   health->onDamage = [enemy, &world](float damage) {
     auto obj = world.CreateObject("text");
@@ -81,11 +98,7 @@ GameObject *CreateKnight(World &world, Vector2 position, GameObject *target) {
     obj->AddComponent<Lifetime>(1.0f);
   };
 
-  // Body sprite
-  auto sprite = enemy->AddComponent<SpriteRenderer>();
-  sprite->AddAnimation(Animation::KNIGHT_IDLE);
-  sprite->AddAnimation(Animation::KNIGHT_WALK);
-  sprite->anchorRatio = {0.5f, 0.75f};
+  ApplySpritePreset(enemy, definition.spritePreset);
 
   return enemy;
 }
@@ -103,7 +116,7 @@ GameObject *CreateCoin(World &world, Vector2 position) {
     GameManager::Get().AddCoin(1);
   };
 
-  coin->AddComponent<SpriteRenderer>(Animation::COIN_IDLE);
+  ApplySpritePreset(coin, SpritePresets::COIN);
 
   return coin;
 }

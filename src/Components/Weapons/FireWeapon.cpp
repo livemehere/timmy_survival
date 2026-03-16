@@ -33,9 +33,9 @@ void FireWeapon::Activate() {
   obj->AddComponent<Velocity>(power, 0.0f);
 
   auto sprite = obj->AddComponent<SpriteRenderer>();
-  sprite->AddAnimation(projectileAnimConfig);
+  sprite->AddClip(projectileClip);
   sprite->rotation = atan2f(dir.y, dir.x) * RAD2DEG + 90.0f;
-  sprite->scale = projectileAnimScale;
+  sprite->scale = projectileScale;
 
   auto col = obj->AddComponent<CircleCollider>(projectileRadius);
   col->isTrigger = true;

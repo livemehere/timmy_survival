@@ -1,5 +1,6 @@
 #include "GameManager.hpp"
 #include "../Prefabs/Prefabs.hpp"
+#include "../Prefabs/Definitions/Enemies.hpp"
 #include "../Utils/MathUtils.hpp"
 #include "CameraManager.hpp"
 #include "raylib.h"
@@ -40,7 +41,8 @@ void GameManager::GenEnemy(int count) {
   for (int i = 0; i < count; i++) {
     Vector2 pos =
         MathUtils::GetRandomArroundPosition(player->position, 300.0f, 700.0f);
-    GameObject *enemy1 = Prefabs::CreateKnight(world, pos, player);
+    GameObject *enemy1 =
+        Prefabs::CreateEnemy(world, pos, player, EnemyDefinitions::KNIGHT);
     (void)enemy1;
   }
 }

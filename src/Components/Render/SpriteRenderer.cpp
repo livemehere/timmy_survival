@@ -2,42 +2,42 @@
 #include "../../Core/GameObject.hpp"
 #include "../../Managers/ResourceManager.hpp"
 
-void SpriteRenderer::AddAnimation(const AnimationConfig &config) {
-  animations[config.name] = config;
+void SpriteRenderer::AddClip(const SpriteClip &clip) {
+  clipsByName[clip.name] = clip;
 
-  if (currentClip.empty()) {
-    Play(config.name);
+  if (activeClipName.empty()) {
+    Play(clip.name);
   }
 }
 
-void SpriteRenderer::Play(const std::string &name) {
-  if (currentClip == name && isPlaying)
+void SpriteRenderer::Play(const std::string &clipName) {
+  if (activeClipName == clipName && isPlaying)
     return;
 
-  if (animations.find(name) != animations.end()) {
-    auto &clip = animations[name];
-    currentClip = name;
-    currentFrame = 0;
-    frameTimer.Reset(clip.frameSpeed);
+  if (clipsByName.find(clipName) != clipsByName.end()) {
+    auto &clip = clipsByName[clipName];
+    activeClipName = clipName;
+    currentFrameIndex = 0;
+    playbackTimer.Reset(clip.frameSpeed);
     isPlaying = true;
   }
 }
 
 void SpriteRenderer::Update(float dt) {
-  if (!isPlaying || currentClip.empty())
+  if (!isPlaying || activeClipName.empty())
     return;
 
-  auto &clip = animations[currentClip];
-  frameTimer.Update(dt);
+  auto &clip = clipsByName[activeClipName];
+  playbackTimer.Update(dt);
 
-  if (frameTimer.DidCompleteThisFrame()) {
-    currentFrame++;
+  if (playbackTimer.DidCompleteThisFrame()) {
+    currentFrameIndex++;
 
-    if (currentFrame >= clip.frameCount) {
+    if (currentFrameIndex >= clip.frameCount) {
       if (clip.loop) {
-        currentFrame = 0;
+        currentFrameIndex = 0;
       } else {
-        currentFrame = clip.frameCount - 1;
+        currentFrameIndex = clip.frameCount - 1;
         isPlaying = false;
       }
     }
@@ -45,15 +45,15 @@ void SpriteRenderer::Update(float dt) {
 }
 
 void SpriteRenderer::Draw() {
-  if (currentClip.empty())
+  if (activeClipName.empty())
     return;
 
-  auto &clip = animations[currentClip];
+  auto &clip = clipsByName[activeClipName];
   Texture2D *texture = ResourceManager::Get().GetTexture(clip.texturePath);
   if (!texture)
     return;
 
-  float x = clip.startX + (currentFrame * clip.frameWidth);
+  float x = clip.startX + (currentFrameIndex * clip.frameWidth);
   float y = clip.startY;
 
   Rectangle sourceRect = {

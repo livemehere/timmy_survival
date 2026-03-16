@@ -2,11 +2,13 @@
 
 #include "raylib.h"
 
+#include "Types/EnemyDefinition.hpp"
 #include "../Core/GameObject.hpp"
 #include "../Core/World.hpp"
 
 namespace Prefabs {
 GameObject *CreatePlayer(World &world, Vector2 position);
-GameObject *CreateKnight(World &world, Vector2 position, GameObject *target);
+GameObject *CreateEnemy(World &world, Vector2 position, GameObject *target,
+                        const EnemyDefinition &definition);
 GameObject *CreateCoin(World &world, Vector2 position);
 } // namespace Prefabs

@@ -13,17 +13,16 @@ public:
   float range;
   bool showRange = false;
 
-  AnimationConfig projectileAnimConfig;
-  Vector2 projectileAnimScale = {1.0f, 1.0f};
+  SpriteClip projectileClip;
+  Vector2 projectileScale = {1.0f, 1.0f};
 
   FireWeapon(float damage, float cooldown, float projectileSpeed,
              float projectileLifetime, float projectileRadius, float range,
-             AnimationConfig projectileAnimConfig, Vector2 projectileAnimScale)
+              const SpriteClip &projectileClip, Vector2 projectileScale)
       : Weapon(damage), timer(cooldown, true), projectileSpeed(projectileSpeed),
         projectileLifetime(projectileLifetime),
         projectileRadius(projectileRadius), range(range),
-        projectileAnimConfig(projectileAnimConfig),
-        projectileAnimScale(projectileAnimScale) {}
+        projectileClip(projectileClip), projectileScale(projectileScale) {}
 
   void Update(float dt) override;
 

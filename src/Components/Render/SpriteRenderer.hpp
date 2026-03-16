@@ -6,7 +6,7 @@
 #include <string>
 #include <unordered_map>
 
-struct AnimationConfig {
+struct SpriteClip {
   std::string name;
   std::string texturePath;
 
@@ -22,12 +22,11 @@ struct AnimationConfig {
 
 class SpriteRenderer : public Component {
 
-  std::unordered_map<std::string, AnimationConfig> animations;
-  std::string currentClip;
+  std::unordered_map<std::string, SpriteClip> clipsByName;
+  std::string activeClipName;
 
-  int currentFrame = 0;
-  Timer frameTimer = Timer(0.0f, true);
-  // this is not timer status, it's animation status
+  int currentFrameIndex = 0;
+  Timer playbackTimer = Timer(0.0f, true);
   bool isPlaying = false;
   bool debugMode = false;
 
@@ -41,17 +40,17 @@ public:
   Vector2 offset = {0, 0};
 
   SpriteRenderer() = default;
-  SpriteRenderer(AnimationConfig defaultAnimConfig,
-                 Vector2 scale = {1.0f, 1.0f},
-                 Vector2 anchorRatio = {0.5f, 0.5f}) {
-    AddAnimation(defaultAnimConfig);
-    this->scale = scale;
-    this->anchorRatio = anchorRatio;
-  };
+  SpriteRenderer(const SpriteClip &initialClip,
+                 Vector2 initialScale = {1.0f, 1.0f},
+                 Vector2 initialAnchorRatio = {0.5f, 0.5f}) {
+    AddClip(initialClip);
+    scale = initialScale;
+    anchorRatio = initialAnchorRatio;
+  }
 
-  void AddAnimation(const AnimationConfig &config);
+  void AddClip(const SpriteClip &clip);
 
-  void Play(const std::string &name);
+  void Play(const std::string &clipName);
 
   void Update(float dt) override;
 
