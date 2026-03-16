@@ -14,6 +14,8 @@ GameManager &GameManager::Get() {
 }
 
 void GameManager::Init() {
+  constexpr int orbitWeaponCount = 3;
+
   shader = LoadShader(nullptr, "../assets/shaders/world.frag");
 
   centresLoc = GetShaderLocation(shader, "centres");
@@ -38,6 +40,14 @@ void GameManager::Init() {
   otherWeapon.name = "weapon_energyBall_2";
   otherWeapon.followOffset = {10.0f, -10.0f};
   Prefabs::CreateWeapon(world, player, otherWeapon);
+
+  for (int i = 0; i < orbitWeaponCount; i++) {
+    auto orbitWeapon = WeaponDefinitions::ORBIT_BLADE;
+    orbitWeapon.name = TextFormat("weapon_orbitBlade_%d", i);
+    orbitWeapon.startAngleDegrees =
+        orbitWeaponCount > 0 ? (360.0f / orbitWeaponCount) * i : 0.0f;
+    Prefabs::CreateWeapon(world, player, orbitWeapon);
+  }
   // -- end --
 
   CameraManager::Get().SetTarget(&player->position);

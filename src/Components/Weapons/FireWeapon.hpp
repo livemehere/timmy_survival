@@ -3,7 +3,6 @@
 #include "../../Core/Timer.hpp"
 #include "../../Core/Weapon.hpp"
 #include "../../Prefabs/Types/ProjectileDefinition.hpp"
-#include "../Render/SpriteRenderer.hpp"
 
 class FireWeapon : public Weapon {
 public:
@@ -18,7 +17,8 @@ public:
 
   FireWeapon(float damage, float cooldown, float range,
              const ProjectileDefinition &projectileDefinition)
-      : Weapon(damage), timer(cooldown, true), projectileSpeed(projectileDefinition.speed),
+      : Weapon(damage), timer(cooldown, true),
+        projectileSpeed(projectileDefinition.speed),
         projectileLifetime(projectileDefinition.lifetime),
         projectileRadius(projectileDefinition.colliderRadius), range(range),
         projectileDefinition(projectileDefinition) {}

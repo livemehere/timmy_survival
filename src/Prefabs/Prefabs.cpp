@@ -10,11 +10,11 @@
 #include "../Components/Render/SpriteRenderer.hpp"
 #include "../Components/Render/TextRenderer.hpp"
 #include "../Components/Weapons/FireWeapon.hpp"
+#include "../Components/Weapons/OrbitWeapon.hpp"
 #include "../Components/Weapons/Projectile.hpp"
 #include "../Core/GameObject.hpp"
 #include "../Managers/GameManager.hpp"
 #include "Definitions/Sprites.hpp"
-#include "Definitions/Weapons.hpp"
 #include <string>
 
 namespace {
@@ -99,11 +99,25 @@ GameObject *CreateWeapon(World &world, GameObject *owner,
   weapon->position = owner->position;
 
   ApplySpritePreset(weapon, definition.spritePreset);
-  weapon->AddComponent<Follow>(owner, definition.followOffset,
-                               definition.followSpeed);
-  weapon->AddComponent<FireWeapon>(definition.projectileDefinition.damage,
-                                   definition.cooldown, definition.range,
-                                   definition.projectileDefinition);
+
+  if (definition.type == WeaponType::FIRE) {
+    float damage = definition.damage >= 0.0f
+                       ? definition.damage
+                       : definition.projectileDefinition.damage;
+    weapon->AddComponent<Follow>(owner, definition.followOffset,
+                                 definition.followSpeed);
+    weapon->AddComponent<FireWeapon>(damage, definition.cooldown,
+                                     definition.range,
+                                     definition.projectileDefinition);
+    return weapon;
+  }
+
+  auto collider =
+      weapon->AddComponent<CircleCollider>(definition.colliderRadius);
+  collider->isTrigger = true;
+  weapon->AddComponent<OrbitWeapon>(
+      owner, definition.damage, definition.orbitRadius,
+      definition.orbitSpeedDegrees, definition.startAngleDegrees);
 
   return weapon;
 }

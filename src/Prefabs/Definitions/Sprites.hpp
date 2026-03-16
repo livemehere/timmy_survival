@@ -86,6 +86,18 @@ inline const SpriteClip KNIFE = {
     .frameSpeed = 0.1f,
     .loop = false,
 };
+
+inline const SpriteClip ORBIT_BLADE = {
+    .name = "OrbitBlade",
+    .texturePath = "../assets/source.png",
+    .startX = 304,
+    .startY = 112,
+    .frameWidth = 16,
+    .frameHeight = 32,
+    .frameCount = 1,
+    .frameSpeed = 0.1f,
+    .loop = false,
+};
 } // namespace SpriteClips
 
 namespace SpritePresets {
@@ -112,6 +124,15 @@ inline const SpritePreset ENERGY_BALL = {
     .defaultClipName = "EnergyBall",
     .scale = {0.4f, 0.4f},
     .anchorRatio = {0.5f, 0.5f},
+    .offset = {0.0f, 0.0f},
+    .tint = WHITE,
+};
+
+inline const SpritePreset ORBIT_BLADE = {
+    .clips = {SpriteClips::ORBIT_BLADE},
+    .defaultClipName = "OrbitBlade",
+    .scale = {1.0f, 1.0f},
+    .anchorRatio = {0.5f, 0.75f},
     .offset = {0.0f, 0.0f},
     .tint = WHITE,
 };

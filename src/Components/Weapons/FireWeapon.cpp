@@ -3,10 +3,7 @@
 #include "../../Core/GameObject.hpp"
 #include "../../Core/World.hpp"
 #include "../../Prefabs/Prefabs.hpp"
-#include "../Colliders/CircleCollider.hpp"
-#include "../Movement/Velocity.hpp"
 #include "../Render/SpriteRenderer.hpp"
-#include "Projectile.hpp"
 #include "raymath.h"
 
 void FireWeapon::Update(float dt) {
@@ -32,8 +29,8 @@ void FireWeapon::Activate() {
   if (projectileDefinition.rotateToVelocity) {
     auto sprite = obj->GetComponent<SpriteRenderer>();
     if (sprite) {
-      sprite->rotation = atan2f(dir.y, dir.x) * RAD2DEG +
-                         projectileDefinition.rotationOffset;
+      sprite->rotation =
+          atan2f(dir.y, dir.x) * RAD2DEG + projectileDefinition.rotationOffset;
     }
   }
 }
