@@ -35,12 +35,12 @@ void GameManager::Init() {
 
   // -- player --
   player = Prefabs::CreatePlayer(world, {0, 0});
-  // Prefabs::CreateWeapon(world, player, WeaponDefinitions::ENERGY_BALL);
-  //
-  // auto otherWeapon = WeaponDefinitions::ENERGY_BALL;
-  // otherWeapon.name = "weapon_energyBall_2";
-  // otherWeapon.followOffset = {10.0f, -10.0f};
-  // Prefabs::CreateWeapon(world, player, otherWeapon);
+  Prefabs::CreateWeapon(world, player, WeaponDefinitions::ENERGY_BALL);
+
+  auto otherWeapon = WeaponDefinitions::ENERGY_BALL;
+  otherWeapon.name = "weapon_energyBall_2";
+  otherWeapon.followOffset = {10.0f, -10.0f};
+  Prefabs::CreateWeapon(world, player, otherWeapon);
 
   auto orbitWeaponObject =
       Prefabs::CreateWeapon(world, player, WeaponDefinitions::ORBIT_BLADE);
@@ -70,10 +70,16 @@ void GameManager::GenEnemy(int count) {
 
 void GameManager::HandleGlobalEvents() {
   if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-    Vector2 mouseWorldPos =
-        GetScreenToWorld2D(GetMousePosition(), CameraManager::Get().GetCamera());
+    Vector2 mouseWorldPos = GetScreenToWorld2D(
+        GetMousePosition(), CameraManager::Get().GetCamera());
     Prefabs::CreateEffect(world, mouseWorldPos,
                           EffectDefinitions::LIGHTNING_STRIKE);
+  }
+
+  if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+    Vector2 mouseWorldPos = GetScreenToWorld2D(
+        GetMousePosition(), CameraManager::Get().GetCamera());
+    Prefabs::CreateEffect(world, mouseWorldPos, EffectDefinitions::DAMAGE_ZONE);
   }
 
   if (IsKeyPressed(KEY_TAB)) {

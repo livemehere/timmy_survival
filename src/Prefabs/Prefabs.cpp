@@ -2,6 +2,7 @@
 #include "../Components/Colliders/CircleCollider.hpp"
 #include "../Components/EnemyAI.hpp"
 #include "../Components/Effects/LightningStrike.hpp"
+#include "../Components/Effects/DamageZone.hpp"
 #include "../Components/Health.hpp"
 #include "../Components/Lifetime.hpp"
 #include "../Components/Movement/Follow.hpp"
@@ -77,6 +78,12 @@ GameObject *CreateEffect(World &world, Vector2 position,
     effect->AddComponent<LightningStrike>(
         definition.damage, definition.radius, definition.hitDelay,
         definition.lifetime, definition.knockbackForce, definition.hitCooldown);
+    break;
+  case EffectType::DAMAGE_ZONE:
+    effect->AddComponent<DamageZone>(definition.damage, definition.radius,
+                                     definition.lifetime,
+                                     definition.knockbackForce,
+                                     definition.tickInterval);
     break;
   }
 

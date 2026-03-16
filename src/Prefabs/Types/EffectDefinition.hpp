@@ -4,6 +4,7 @@
 
 enum class EffectType {
   LIGHTNING_STRIKE,
+  DAMAGE_ZONE,
 };
 
 struct EffectDefinition {
@@ -15,4 +16,5 @@ struct EffectDefinition {
   float lifetime = 0.0f;
   float knockbackForce = 0.0f;
   float hitCooldown = -1.0f;
+  float tickInterval = 0.0f;
 };
