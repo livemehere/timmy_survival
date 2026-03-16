@@ -1,6 +1,7 @@
 #include "Prefabs.hpp"
 #include "../Components/Colliders/CircleCollider.hpp"
 #include "../Components/EnemyAI.hpp"
+#include "../Components/Effects/LightningStrike.hpp"
 #include "../Components/Health.hpp"
 #include "../Components/Lifetime.hpp"
 #include "../Components/Movement/Follow.hpp"
@@ -64,6 +65,22 @@ GameObject *CreatePlayer(World &world, Vector2 position) {
   ApplySpritePreset(player, SpritePresets::PLAYER);
 
   return player;
+}
+
+GameObject *CreateEffect(World &world, Vector2 position,
+                         const EffectDefinition &definition) {
+  auto effect = world.CreateObject(definition.name);
+  effect->position = position;
+
+  switch (definition.type) {
+  case EffectType::LIGHTNING_STRIKE:
+    effect->AddComponent<LightningStrike>(
+        definition.damage, definition.radius, definition.hitDelay,
+        definition.lifetime, definition.knockbackForce, definition.hitCooldown);
+    break;
+  }
+
+  return effect;
 }
 
 GameObject *CreateEnemy(World &world, Vector2 position, GameObject *target,

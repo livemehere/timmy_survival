@@ -1,5 +1,6 @@
 #include "GameManager.hpp"
 #include "../Components/Weapons/OrbitWeapon.hpp"
+#include "../Prefabs/Definitions/Effects.hpp"
 #include "../Prefabs/Definitions/Enemies.hpp"
 #include "../Prefabs/Definitions/Weapons.hpp"
 #include "../Prefabs/Prefabs.hpp"
@@ -68,6 +69,13 @@ void GameManager::GenEnemy(int count) {
 }
 
 void GameManager::HandleGlobalEvents() {
+  if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+    Vector2 mouseWorldPos =
+        GetScreenToWorld2D(GetMousePosition(), CameraManager::Get().GetCamera());
+    Prefabs::CreateEffect(world, mouseWorldPos,
+                          EffectDefinitions::LIGHTNING_STRIKE);
+  }
+
   if (IsKeyPressed(KEY_TAB)) {
     int randomIdx = GetRandomValue(0, world.objects.size() - 1);
     auto &randomTarget = world.objects[randomIdx];
