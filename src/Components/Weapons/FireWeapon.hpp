@@ -17,10 +17,13 @@ public:
   Vector2 projectileAnimScale = {1.0f, 1.0f};
 
   FireWeapon(float damage, float cooldown, float projectileSpeed,
-             float projectileLifetime, float projectileRadius, float range)
+             float projectileLifetime, float projectileRadius, float range,
+             AnimationConfig projectileAnimConfig, Vector2 projectileAnimScale)
       : Weapon(damage), timer(cooldown, true), projectileSpeed(projectileSpeed),
         projectileLifetime(projectileLifetime),
-        projectileRadius(projectileRadius), range(range) {}
+        projectileRadius(projectileRadius), range(range),
+        projectileAnimConfig(projectileAnimConfig),
+        projectileAnimScale(projectileAnimScale) {}
 
   void Update(float dt) override;
 

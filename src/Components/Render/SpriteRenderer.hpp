@@ -41,6 +41,13 @@ public:
   Vector2 offset = {0, 0};
 
   SpriteRenderer() = default;
+  SpriteRenderer(AnimationConfig defaultAnimConfig,
+                 Vector2 scale = {1.0f, 1.0f},
+                 Vector2 anchorRatio = {0.5f, 0.5f}) {
+    AddAnimation(defaultAnimConfig);
+    this->scale = scale;
+    this->anchorRatio = anchorRatio;
+  };
 
   void AddAnimation(const AnimationConfig &config);
 
