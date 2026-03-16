@@ -15,6 +15,7 @@ enum class Layer {
   PROJECTILE = 3,
   UI = 4,
   ITEM = 5,
+  WEAPON = 6,
 };
 
 class GameObject {

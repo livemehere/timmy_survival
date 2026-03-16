@@ -3,6 +3,7 @@
 #include "../Components/EnemyAI.hpp"
 #include "../Components/Health.hpp"
 #include "../Components/Lifetime.hpp"
+#include "../Components/Movement/FollowMovement.hpp"
 #include "../Components/Movement/Magnet.hpp"
 #include "../Components/Movement/Velocity.hpp"
 #include "../Components/PlayerController.hpp"
@@ -11,6 +12,7 @@
 #include "../Components/Weapons/FireWeapon.hpp"
 #include "../Core/GameObject.hpp"
 #include "../Managers/GameManager.hpp"
+#include "Animations.hpp"
 #include <string>
 
 namespace Prefabs {
@@ -22,15 +24,23 @@ GameObject *CreatePlayer(World &world, Vector2 position) {
 
   // Body sprite
   auto sprite = player->AddComponent<SpriteRenderer>();
-  sprite->AddAnimation("Idle", "../assets/source.png", 128, 32, 16, 32, 2, 0.5f,
-                       true);
-  sprite->AddAnimation("Walk", "../assets/source.png", 192, 32, 16, 32, 4,
-                       0.15f, true);
+  sprite->AddAnimation(Animation::PLAYER_IDLE);
+  sprite->AddAnimation(Animation::PLAYER_WALK);
   sprite->anchorRatio = {0.5f, 0.75f};
 
   // Weapon
+  auto weapon = world.CreateObject("KnifeWeapon");
+  weapon->layer = Layer::WEAPON;
+  weapon->AddComponent<FollowMovement>(player, Vector2{10.0f, -10.0f});
+
   auto fireWeapon =
-      player->AddComponent<FireWeapon>(1.0f, 0.1f, 300.0f, 2.0f, 2.0f, 200.0f);
+      weapon->AddComponent<FireWeapon>(1.0f, 0.1f, 300.0f, 2.0f, 2.0f, 200.0f);
+  fireWeapon->projectileAnimConfig = Animation::ENERGY_BALL;
+  fireWeapon->projectileAnimScale = {0.4f, 0.4f};
+
+  auto ws = weapon->AddComponent<SpriteRenderer>();
+  ws->AddAnimation(Animation::ENERGY_BALL);
+  ws->scale = {0.4f, 0.4f};
 
   // item magnet
   auto magnetCollider = player->AddComponent<CircleCollider>(50.0f);
@@ -73,10 +83,8 @@ GameObject *CreateKnight(World &world, Vector2 position, GameObject *target) {
 
   // Body sprite
   auto sprite = knight->AddComponent<SpriteRenderer>();
-  sprite->AddAnimation("Idle", "../assets/source.png", 128, 64, 16, 32, 2, 0.5f,
-                       true);
-  sprite->AddAnimation("Walk", "../assets/source.png", 192, 64, 16, 32, 4,
-                       0.15f, true);
+  sprite->AddAnimation(Animation::KNIGHT_IDLE);
+  sprite->AddAnimation(Animation::KNIGHT_WALK);
   sprite->anchorRatio = {0.5f, 0.75f};
 
   return knight;
@@ -96,8 +104,7 @@ GameObject *CreateCoin(World &world, Vector2 position) {
   };
 
   auto sprite = coin->AddComponent<SpriteRenderer>();
-  sprite->AddAnimation("Idle", "../assets/source.png", 288, 272, 8, 8, 4, 0.1f,
-                       true);
+  sprite->AddAnimation(Animation::COIN_IDLE);
 
   return coin;
 }

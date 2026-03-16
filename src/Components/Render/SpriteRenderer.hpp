@@ -6,7 +6,7 @@
 #include <string>
 #include <unordered_map>
 
-struct AnimationClip {
+struct AnimationConfig {
   std::string name;
   std::string texturePath;
 
@@ -22,7 +22,7 @@ struct AnimationClip {
 
 class SpriteRenderer : public Component {
 
-  std::unordered_map<std::string, AnimationClip> animations;
+  std::unordered_map<std::string, AnimationConfig> animations;
   std::string currentClip;
 
   int currentFrame = 0;
@@ -42,9 +42,7 @@ public:
 
   SpriteRenderer() = default;
 
-  void AddAnimation(const std::string &name, const std::string &texturePath,
-                    int startX, int startY, int frameWidth, int frameHeight,
-                    int frameCount, float frameSpeed, bool loop);
+  void AddAnimation(const AnimationConfig &config);
 
   void Play(const std::string &name);
 

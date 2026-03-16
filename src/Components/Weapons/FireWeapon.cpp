@@ -4,6 +4,7 @@
 #include "../../Core/World.hpp"
 #include "../Colliders/CircleCollider.hpp"
 #include "../Movement/Velocity.hpp"
+#include "../Render/SpriteRenderer.hpp"
 #include "Projectile.hpp"
 #include "raymath.h"
 
@@ -30,6 +31,11 @@ void FireWeapon::Activate() {
   obj->AddComponent<Projectile>(damage, projectileLifetime, 1, 150.0f);
   Vector2 power = Vector2Scale(dir, projectileSpeed);
   obj->AddComponent<Velocity>(power, 0.0f);
+
+  auto sprite = obj->AddComponent<SpriteRenderer>();
+  sprite->AddAnimation(projectileAnimConfig);
+  sprite->rotation = atan2f(dir.y, dir.x) * RAD2DEG + 90.0f;
+  sprite->scale = projectileAnimScale;
 
   auto col = obj->AddComponent<CircleCollider>(projectileRadius);
   col->isTrigger = true;
