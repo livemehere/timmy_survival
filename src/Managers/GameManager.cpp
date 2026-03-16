@@ -1,4 +1,5 @@
 #include "GameManager.hpp"
+#include "../Components/Weapons/OrbitWeapon.hpp"
 #include "../Prefabs/Definitions/Enemies.hpp"
 #include "../Prefabs/Definitions/Weapons.hpp"
 #include "../Prefabs/Prefabs.hpp"
@@ -14,7 +15,6 @@ GameManager &GameManager::Get() {
 }
 
 void GameManager::Init() {
-  constexpr int orbitWeaponCount = 3;
 
   shader = LoadShader(nullptr, "../assets/shaders/world.frag");
 
@@ -34,19 +34,19 @@ void GameManager::Init() {
 
   // -- player --
   player = Prefabs::CreatePlayer(world, {0, 0});
-  Prefabs::CreateWeapon(world, player, WeaponDefinitions::ENERGY_BALL);
+  // Prefabs::CreateWeapon(world, player, WeaponDefinitions::ENERGY_BALL);
+  //
+  // auto otherWeapon = WeaponDefinitions::ENERGY_BALL;
+  // otherWeapon.name = "weapon_energyBall_2";
+  // otherWeapon.followOffset = {10.0f, -10.0f};
+  // Prefabs::CreateWeapon(world, player, otherWeapon);
 
-  auto otherWeapon = WeaponDefinitions::ENERGY_BALL;
-  otherWeapon.name = "weapon_energyBall_2";
-  otherWeapon.followOffset = {10.0f, -10.0f};
-  Prefabs::CreateWeapon(world, player, otherWeapon);
-
-  for (int i = 0; i < orbitWeaponCount; i++) {
-    auto orbitWeapon = WeaponDefinitions::ORBIT_BLADE;
-    orbitWeapon.name = TextFormat("weapon_orbitBlade_%d", i);
-    orbitWeapon.startAngleDegrees =
-        orbitWeaponCount > 0 ? (360.0f / orbitWeaponCount) * i : 0.0f;
-    Prefabs::CreateWeapon(world, player, orbitWeapon);
+  auto orbitWeaponObject =
+      Prefabs::CreateWeapon(world, player, WeaponDefinitions::ORBIT_BLADE);
+  auto orbitWeapon = orbitWeaponObject->GetComponent<OrbitWeapon>();
+  if (orbitWeapon) {
+    orbitWeapon->count = 5;
+    orbitWeapon->orbitSpeedDegrees = 100.0f;
   }
   // -- end --
 

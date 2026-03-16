@@ -37,7 +37,8 @@ void Health::Update(float dt) {
   sprite->tint = WHITE;
 }
 
-bool Health::TakeDamage(float damage, GameObject *source) {
+bool Health::TakeDamage(float damage, GameObject *source,
+                        float sourceInvincibilityTime) {
   if (hp <= 0.0f) {
     return false;
   }
@@ -54,7 +55,9 @@ bool Health::TakeDamage(float damage, GameObject *source) {
   hp -= damage;
 
   if (source) {
-    sourceHitTimers[source].Reset(invincibilityTime);
+    float cooldown = sourceInvincibilityTime >= 0.0f ? sourceInvincibilityTime
+                                                     : invincibilityTime;
+    sourceHitTimers[source].Reset(cooldown);
   } else {
     invincibilityTimer.Reset(invincibilityTime);
   }

@@ -26,7 +26,8 @@ public:
 
   void Update(float dt) override;
 
-  bool TakeDamage(float damage, GameObject *source = nullptr);
+  bool TakeDamage(float damage, GameObject *source = nullptr,
+                  float sourceInvincibilityTime = -1.0f);
 
   void Die();
 

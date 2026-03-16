@@ -37,6 +37,7 @@ SpriteRenderer *ApplySpritePreset(GameObject *gameObject,
 
   return sprite;
 }
+
 } // namespace
 
 namespace Prefabs {
@@ -98,9 +99,8 @@ GameObject *CreateWeapon(World &world, GameObject *owner,
   weapon->layer = Layer::WEAPON;
   weapon->position = owner->position;
 
-  ApplySpritePreset(weapon, definition.spritePreset);
-
   if (definition.type == WeaponType::FIRE) {
+    ApplySpritePreset(weapon, definition.spritePreset);
     float damage = definition.damage >= 0.0f
                        ? definition.damage
                        : definition.projectileDefinition.damage;
@@ -112,12 +112,11 @@ GameObject *CreateWeapon(World &world, GameObject *owner,
     return weapon;
   }
 
-  auto collider =
-      weapon->AddComponent<CircleCollider>(definition.colliderRadius);
-  collider->isTrigger = true;
   weapon->AddComponent<OrbitWeapon>(
-      owner, definition.damage, definition.orbitRadius,
-      definition.orbitSpeedDegrees, definition.startAngleDegrees);
+      owner, definition.damage, definition.count, definition.orbitRadius,
+      definition.orbitSpeedDegrees, definition.startAngleDegrees,
+      definition.colliderRadius, definition.knockbackForce,
+      definition.hitCooldown, definition.spritePreset);
 
   return weapon;
 }
