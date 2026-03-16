@@ -1,8 +1,8 @@
-#include "./FollowMovement.hpp"
+#include "./Follow.hpp"
 #include "../../Core/GameObject.hpp"
 #include "raymath.h"
 
-void FollowMovement::Update(float dt) {
+void Follow::Update(float dt) {
   if (!target)
     return;
 

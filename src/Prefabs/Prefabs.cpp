@@ -3,7 +3,7 @@
 #include "../Components/EnemyAI.hpp"
 #include "../Components/Health.hpp"
 #include "../Components/Lifetime.hpp"
-#include "../Components/Movement/FollowMovement.hpp"
+#include "../Components/Movement/Follow.hpp"
 #include "../Components/Movement/Magnet.hpp"
 #include "../Components/Movement/Velocity.hpp"
 #include "../Components/PlayerController.hpp"
@@ -31,7 +31,7 @@ GameObject *CreatePlayer(World &world, Vector2 position) {
   // Weapon
   auto weapon = world.CreateObject("KnifeWeapon");
   weapon->layer = Layer::WEAPON;
-  weapon->AddComponent<FollowMovement>(player, Vector2{10.0f, -10.0f});
+  weapon->AddComponent<Follow>(player, Vector2{10.0f, -10.0f});
 
   auto fireWeapon =
       weapon->AddComponent<FireWeapon>(1.0f, 0.1f, 300.0f, 2.0f, 2.0f, 200.0f);
