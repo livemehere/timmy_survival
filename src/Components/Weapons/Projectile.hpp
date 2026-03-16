@@ -4,7 +4,6 @@
 #include "../../Core/Timer.hpp"
 #include "raylib.h"
 #include <deque>
-#include <unordered_set>
 
 class Projectile : public Component {
 public:
@@ -13,8 +12,6 @@ public:
   float damage = 1;
   int pierce;
   float knockbackForce;
-
-  std::unordered_set<GameObject *> hitObjects;
 
   // effects
   std::deque<Vector2> history;

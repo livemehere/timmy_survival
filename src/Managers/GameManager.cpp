@@ -30,8 +30,15 @@ void GameManager::Init() {
 
   renderTexture = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
 
+  // -- player --
   player = Prefabs::CreatePlayer(world, {0, 0});
   Prefabs::CreateWeapon(world, player, WeaponDefinitions::ENERGY_BALL);
+
+  auto otherWeapon = WeaponDefinitions::ENERGY_BALL;
+  otherWeapon.name = "weapon_energyBall_2";
+  otherWeapon.followOffset = {10.0f, -10.0f};
+  Prefabs::CreateWeapon(world, player, otherWeapon);
+  // -- end --
 
   CameraManager::Get().SetTarget(&player->position);
 

@@ -32,16 +32,9 @@ void Projectile::OnTriggerEnter(Collider *other) {
     return;
   }
 
-  if (hitObjects.find(other->gameObject) != hitObjects.end()) {
-    return;
-  }
-
   auto health = other->gameObject->GetComponent<Health>();
-  if (health) {
-    hitObjects.insert(other->gameObject);
-
+  if (health && health->TakeDamage(damage, gameObject)) {
     pierce--;
-    health->TakeDamage(damage);
 
     auto velocity = other->gameObject->GetComponent<Velocity>();
     if (velocity) {

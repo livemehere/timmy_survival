@@ -3,6 +3,7 @@
 #include "../Core/Component.hpp"
 #include "../Core/Timer.hpp"
 #include <functional>
+#include <unordered_map>
 
 class Health : public Component {
 public:
@@ -11,6 +12,7 @@ public:
 
   float invincibilityTime = 0.1f;
   Timer invincibilityTimer = Timer(0.0f, false);
+  std::unordered_map<GameObject *, Timer> sourceHitTimers;
 
   std::function<void()> onDeath;
   std::function<void(float damage)> onDamage;
@@ -24,7 +26,7 @@ public:
 
   void Update(float dt) override;
 
-  void TakeDamage(float damage);
+  bool TakeDamage(float damage, GameObject *source = nullptr);
 
   void Die();
 

@@ -8,6 +8,17 @@ void Health::Update(float dt) {
   invincibilityTimer.Update(dt);
   hitTimer.Update(dt);
 
+  for (auto it = sourceHitTimers.begin(); it != sourceHitTimers.end();) {
+    it->second.Update(dt);
+
+    if (!it->second.IsRunning()) {
+      it = sourceHitTimers.erase(it);
+      continue;
+    }
+
+    ++it;
+  }
+
   auto sprite = gameObject->GetComponent<SpriteRenderer>();
   if (!sprite) {
     return;
@@ -26,13 +37,28 @@ void Health::Update(float dt) {
   sprite->tint = WHITE;
 }
 
-void Health::TakeDamage(float damage) {
-  if (invincibilityTimer.IsRunning() || hp <= 0.0f) {
-    return;
+bool Health::TakeDamage(float damage, GameObject *source) {
+  if (hp <= 0.0f) {
+    return false;
+  }
+
+  if (source) {
+    auto it = sourceHitTimers.find(source);
+    if (it != sourceHitTimers.end() && it->second.IsRunning()) {
+      return false;
+    }
+  } else if (invincibilityTimer.IsRunning()) {
+    return false;
   }
 
   hp -= damage;
-  invincibilityTimer.Reset(invincibilityTime);
+
+  if (source) {
+    sourceHitTimers[source].Reset(invincibilityTime);
+  } else {
+    invincibilityTimer.Reset(invincibilityTime);
+  }
+
   hitTimer.Reset(0.1f);
 
   if (onDamage) {
@@ -51,6 +77,8 @@ void Health::TakeDamage(float damage) {
     hp = 0.0f;
     Die();
   }
+
+  return true;
 }
 
 void Health::Die() {

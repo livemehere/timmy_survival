@@ -16,7 +16,7 @@ inline const ProjectileDefinition KNIFE = {
         {
             .clips = {SpriteClips::KNIFE},
             .defaultClipName = "Knife",
-            .scale = {0.4f, 0.4f},
+            .scale = {0.7f, 0.7f},
             .anchorRatio = {0.5f, 0.5f},
             .offset = {0.0f, 0.0f},
             .tint = WHITE,
