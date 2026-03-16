@@ -10,9 +10,11 @@
 #include "../Components/Render/SpriteRenderer.hpp"
 #include "../Components/Render/TextRenderer.hpp"
 #include "../Components/Weapons/FireWeapon.hpp"
+#include "../Components/Weapons/Projectile.hpp"
 #include "../Core/GameObject.hpp"
 #include "../Managers/GameManager.hpp"
 #include "Definitions/Sprites.hpp"
+#include "Definitions/Weapons.hpp"
 #include <string>
 
 namespace {
@@ -60,19 +62,6 @@ GameObject *CreatePlayer(World &world, Vector2 position) {
   // Sprite
   ApplySpritePreset(player, SpritePresets::PLAYER);
 
-  // Weapon Core
-  auto weapon = world.CreateObject("EnergyBall");
-  weapon->layer = Layer::WEAPON;
-
-  // Weapon sprite
-  ApplySpritePreset(weapon, SpritePresets::ENERGY_BALL);
-
-  // Weapon behavior
-  weapon->AddComponent<Follow>(player, Vector2{-10.0f, -10.0f}, 10.0f);
-  weapon->AddComponent<FireWeapon>(1.0f, 0.5f, 300.0f, 2.0f, 2.0f, 200.0f,
-                                   SpriteClips::ENERGY_BALL,
-                                   Vector2{0.4f, 0.4f});
-
   return player;
 }
 
@@ -101,6 +90,44 @@ GameObject *CreateEnemy(World &world, Vector2 position, GameObject *target,
   ApplySpritePreset(enemy, definition.spritePreset);
 
   return enemy;
+}
+
+GameObject *CreateWeapon(World &world, GameObject *owner,
+                         const WeaponDefinition &definition) {
+  auto weapon = world.CreateObject(definition.name);
+  weapon->layer = Layer::WEAPON;
+  weapon->position = owner->position;
+
+  ApplySpritePreset(weapon, definition.spritePreset);
+  weapon->AddComponent<Follow>(owner, definition.followOffset,
+                               definition.followSpeed);
+  weapon->AddComponent<FireWeapon>(definition.projectileDefinition.damage,
+                                   definition.cooldown, definition.range,
+                                   definition.projectileDefinition);
+
+  return weapon;
+}
+
+GameObject *CreateProjectile(World &world, Vector2 position, Vector2 velocity,
+                             const ProjectileDefinition &definition,
+                             float damageOverride) {
+  auto projectile = world.CreateObject(definition.name);
+  projectile->layer = Layer::PROJECTILE;
+  projectile->position = position;
+
+  float damage = damageOverride >= 0.0f ? damageOverride : definition.damage;
+  projectile->AddComponent<Projectile>(damage, definition.lifetime,
+                                       definition.pierce,
+                                       definition.knockbackForce);
+  projectile->AddComponent<Velocity>(velocity, 0.0f);
+
+  auto collider =
+      projectile->AddComponent<CircleCollider>(definition.colliderRadius);
+  collider->isTrigger = true;
+
+  ApplySpritePreset(projectile, definition.spritePreset);
+
+  return projectile;
 }
 
 GameObject *CreateCoin(World &world, Vector2 position) {

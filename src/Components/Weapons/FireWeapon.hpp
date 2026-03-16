@@ -2,6 +2,7 @@
 
 #include "../../Core/Timer.hpp"
 #include "../../Core/Weapon.hpp"
+#include "../../Prefabs/Types/ProjectileDefinition.hpp"
 #include "../Render/SpriteRenderer.hpp"
 
 class FireWeapon : public Weapon {
@@ -13,16 +14,14 @@ public:
   float range;
   bool showRange = false;
 
-  SpriteClip projectileClip;
-  Vector2 projectileScale = {1.0f, 1.0f};
+  ProjectileDefinition projectileDefinition;
 
-  FireWeapon(float damage, float cooldown, float projectileSpeed,
-             float projectileLifetime, float projectileRadius, float range,
-              const SpriteClip &projectileClip, Vector2 projectileScale)
-      : Weapon(damage), timer(cooldown, true), projectileSpeed(projectileSpeed),
-        projectileLifetime(projectileLifetime),
-        projectileRadius(projectileRadius), range(range),
-        projectileClip(projectileClip), projectileScale(projectileScale) {}
+  FireWeapon(float damage, float cooldown, float range,
+             const ProjectileDefinition &projectileDefinition)
+      : Weapon(damage), timer(cooldown, true), projectileSpeed(projectileDefinition.speed),
+        projectileLifetime(projectileDefinition.lifetime),
+        projectileRadius(projectileDefinition.colliderRadius), range(range),
+        projectileDefinition(projectileDefinition) {}
 
   void Update(float dt) override;
 

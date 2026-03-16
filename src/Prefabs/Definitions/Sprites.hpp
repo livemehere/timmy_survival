@@ -4,47 +4,115 @@
 
 namespace SpriteClips {
 inline const SpriteClip PLAYER_IDLE = {
-    "Idle", "../assets/source.png", 128, 32, 16, 32, 2, 0.5f, true};
+    .name = "Idle",
+    .texturePath = "../assets/source.png",
+    .startX = 128,
+    .startY = 32,
+    .frameWidth = 16,
+    .frameHeight = 32,
+    .frameCount = 2,
+    .frameSpeed = 0.5f,
+    .loop = true,
+};
 
 inline const SpriteClip PLAYER_WALK = {
-    "Walk", "../assets/source.png", 192, 32, 16, 32, 4, 0.15f, true};
+    .name = "Walk",
+    .texturePath = "../assets/source.png",
+    .startX = 192,
+    .startY = 32,
+    .frameWidth = 16,
+    .frameHeight = 32,
+    .frameCount = 4,
+    .frameSpeed = 0.15f,
+    .loop = true,
+};
 
 inline const SpriteClip KNIGHT_IDLE = {
-    "Idle", "../assets/source.png", 128, 64, 16, 32, 2, 0.5f, true};
+    .name = "Idle",
+    .texturePath = "../assets/source.png",
+    .startX = 128,
+    .startY = 64,
+    .frameWidth = 16,
+    .frameHeight = 32,
+    .frameCount = 2,
+    .frameSpeed = 0.5f,
+    .loop = true,
+};
 
 inline const SpriteClip KNIGHT_WALK = {
-    "Walk", "../assets/source.png", 192, 64, 16, 32, 4, 0.15f, true};
+    .name = "Walk",
+    .texturePath = "../assets/source.png",
+    .startX = 192,
+    .startY = 64,
+    .frameWidth = 16,
+    .frameHeight = 32,
+    .frameCount = 4,
+    .frameSpeed = 0.15f,
+    .loop = true,
+};
 
 inline const SpriteClip COIN_IDLE = {
-    "Idle", "../assets/source.png", 288, 272, 8, 8, 4, 0.1f, true};
+    .name = "Idle",
+    .texturePath = "../assets/source.png",
+    .startX = 288,
+    .startY = 272,
+    .frameWidth = 8,
+    .frameHeight = 8,
+    .frameCount = 4,
+    .frameSpeed = 0.1f,
+    .loop = true,
+};
 
 inline const SpriteClip ENERGY_BALL = {
-    "EnergyBall", "../assets/source.png", 288, 0, 16, 16, 4, 10.0f / 60.0f,
-    true};
+    .name = "EnergyBall",
+    .texturePath = "../assets/source.png",
+    .startX = 288,
+    .startY = 0,
+    .frameWidth = 16,
+    .frameHeight = 16,
+    .frameCount = 4,
+    .frameSpeed = 0.15f,
+    .loop = true,
+};
 
 inline const SpriteClip KNIFE = {
-    "Knife", "../assets/source.png", 288, 16, 16, 16, 1, 0.1f, false};
+    .name = "Knife",
+    .texturePath = "../assets/source.png",
+    .startX = 288,
+    .startY = 16,
+    .frameWidth = 16,
+    .frameHeight = 16,
+    .frameCount = 1,
+    .frameSpeed = 0.1f,
+    .loop = false,
+};
 } // namespace SpriteClips
 
 namespace SpritePresets {
-inline const SpritePreset PLAYER = {{SpriteClips::PLAYER_IDLE, SpriteClips::PLAYER_WALK},
-                                    "Idle",
-                                    {1.0f, 1.0f},
-                                    {0.5f, 0.75f},
-                                    {0.0f, 0.0f},
-                                    WHITE};
+inline const SpritePreset PLAYER = {
+    .clips = {SpriteClips::PLAYER_IDLE, SpriteClips::PLAYER_WALK},
+    .defaultClipName = "Idle",
+    .scale = {1.0f, 1.0f},
+    .anchorRatio = {0.5f, 0.75f},
+    .offset = {0.0f, 0.0f},
+    .tint = WHITE,
+};
 
-inline const SpritePreset COIN = {{SpriteClips::COIN_IDLE},
-                                  "Idle",
-                                  {1.0f, 1.0f},
-                                  {0.5f, 0.5f},
-                                  {0.0f, 0.0f},
-                                  WHITE};
+inline const SpritePreset COIN = {
+    .clips = {SpriteClips::COIN_IDLE},
+    .defaultClipName = "Idle",
+    .scale = {1.0f, 1.0f},
+    .anchorRatio = {0.5f, 0.5f},
+    .offset = {0.0f, 0.0f},
+    .tint = WHITE,
+};
 
-inline const SpritePreset ENERGY_BALL = {{SpriteClips::ENERGY_BALL},
-                                         "EnergyBall",
-                                         {0.4f, 0.4f},
-                                         {0.5f, 0.5f},
-                                         {0.0f, 0.0f},
-                                         WHITE};
+inline const SpritePreset ENERGY_BALL = {
+    .clips = {SpriteClips::ENERGY_BALL},
+    .defaultClipName = "EnergyBall",
+    .scale = {0.4f, 0.4f},
+    .anchorRatio = {0.5f, 0.5f},
+    .offset = {0.0f, 0.0f},
+    .tint = WHITE,
+};
 } // namespace SpritePresets

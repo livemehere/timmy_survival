@@ -3,14 +3,15 @@
 #include "SpritePreset.hpp"
 #include <string>
 
-struct EnemyDefinition {
+struct ProjectileDefinition {
   std::string name;
-  float maxHp;
   float damage;
+  float lifetime;
   float speed;
-  float attackRange;
-  float attackCooldown;
-  float bounceScale;
   float colliderRadius;
+  int pierce;
+  float knockbackForce;
   SpritePreset spritePreset;
+  bool rotateToVelocity = false;
+  float rotationOffset = 0.0f;
 };

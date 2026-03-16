@@ -2,6 +2,7 @@
 
 #include "../../Core/GameObject.hpp"
 #include "../../Core/World.hpp"
+#include "../../Prefabs/Prefabs.hpp"
 #include "../Colliders/CircleCollider.hpp"
 #include "../Movement/Velocity.hpp"
 #include "../Render/SpriteRenderer.hpp"
@@ -25,20 +26,16 @@ void FireWeapon::Activate() {
   Vector2 dir = Vector2Subtract(target->position, gameObject->position);
   dir = Vector2Normalize(dir);
 
-  auto obj = gameObject->world->CreateObject("projectile");
-  obj->layer = Layer::PROJECTILE;
-  obj->position = gameObject->position;
-  obj->AddComponent<Projectile>(damage, projectileLifetime, 1, 150.0f);
   Vector2 power = Vector2Scale(dir, projectileSpeed);
-  obj->AddComponent<Velocity>(power, 0.0f);
-
-  auto sprite = obj->AddComponent<SpriteRenderer>();
-  sprite->AddClip(projectileClip);
-  sprite->rotation = atan2f(dir.y, dir.x) * RAD2DEG + 90.0f;
-  sprite->scale = projectileScale;
-
-  auto col = obj->AddComponent<CircleCollider>(projectileRadius);
-  col->isTrigger = true;
+  auto obj = Prefabs::CreateProjectile(*gameObject->world, gameObject->position,
+                                       power, projectileDefinition, damage);
+  if (projectileDefinition.rotateToVelocity) {
+    auto sprite = obj->GetComponent<SpriteRenderer>();
+    if (sprite) {
+      sprite->rotation = atan2f(dir.y, dir.x) * RAD2DEG +
+                         projectileDefinition.rotationOffset;
+    }
+  }
 }
 
 GameObject *FireWeapon::FindNearestEnemy() {

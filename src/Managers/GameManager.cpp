@@ -1,6 +1,7 @@
 #include "GameManager.hpp"
-#include "../Prefabs/Prefabs.hpp"
 #include "../Prefabs/Definitions/Enemies.hpp"
+#include "../Prefabs/Definitions/Weapons.hpp"
+#include "../Prefabs/Prefabs.hpp"
 #include "../Utils/MathUtils.hpp"
 #include "CameraManager.hpp"
 #include "raylib.h"
@@ -30,6 +31,8 @@ void GameManager::Init() {
   renderTexture = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
 
   player = Prefabs::CreatePlayer(world, {0, 0});
+  Prefabs::CreateWeapon(world, player, WeaponDefinitions::ENERGY_BALL);
+
   CameraManager::Get().SetTarget(&player->position);
 
   DevGen();
