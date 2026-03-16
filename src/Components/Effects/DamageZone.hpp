@@ -6,14 +6,16 @@
 class DamageZone : public Effect {
 public:
   float damage;
-  float radius;
+  float width;
+  float height;
   float knockbackForce;
   float tickInterval;
   Timer lifetimeTimer;
 
-  DamageZone(float damage, float radius, float lifetime, float knockbackForce,
-             float tickInterval)
-      : damage(damage), radius(radius), knockbackForce(knockbackForce),
+  DamageZone(float damage, float width, float height, float lifetime,
+             float knockbackForce, float tickInterval)
+      : damage(damage), width(width), height(height),
+        knockbackForce(knockbackForce),
         tickInterval(tickInterval), lifetimeTimer(lifetime, false) {}
 
   void Update(float dt) override;

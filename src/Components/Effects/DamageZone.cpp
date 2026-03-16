@@ -7,6 +7,18 @@
 #include "raymath.h"
 
 namespace {
+bool IsInsideEllipse(Vector2 point, Vector2 center, float width, float height) {
+  float halfWidth = width * 0.5f;
+  float halfHeight = height * 0.5f;
+  if (halfWidth <= 0.0f || halfHeight <= 0.0f) {
+    return false;
+  }
+
+  float dx = (point.x - center.x) / halfWidth;
+  float dy = (point.y - center.y) / halfHeight;
+  return (dx * dx) + (dy * dy) <= 1.0f;
+}
+
 Vector2 GetZoneKnockbackDirection(Vector2 from, Vector2 to) {
   Vector2 dir = Vector2Subtract(to, from);
   if (Vector2LengthSqr(dir) <= 0.0f) {
@@ -29,11 +41,18 @@ void DamageZone::Update(float dt) {
 }
 
 void DamageZone::Draw() {
+  float halfWidth = width * 0.5f;
+  float halfHeight = height * 0.5f;
   float fade = 1.0f - lifetimeTimer.GetProgress();
-  DrawCircleV(gameObject->position, radius, Fade(GREEN, 0.12f + fade * 0.1f));
-  DrawCircleLinesV(gameObject->position, radius, Fade(LIME, 0.5f + fade * 0.4f));
-  DrawCircleLinesV(gameObject->position, radius * 0.6f,
-                   Fade(YELLOW, 0.2f + fade * 0.3f));
+  DrawEllipse(static_cast<int>(gameObject->position.x),
+              static_cast<int>(gameObject->position.y), halfWidth, halfHeight,
+              Fade(GREEN, 0.12f + fade * 0.1f));
+  DrawEllipseLines(static_cast<int>(gameObject->position.x),
+                   static_cast<int>(gameObject->position.y), halfWidth,
+                   halfHeight, Fade(LIME, 0.5f + fade * 0.4f));
+  DrawEllipseLines(static_cast<int>(gameObject->position.x),
+                   static_cast<int>(gameObject->position.y), halfWidth * 0.6f,
+                   halfHeight * 0.6f, Fade(YELLOW, 0.2f + fade * 0.3f));
 }
 
 void DamageZone::Trigger() {
@@ -42,8 +61,7 @@ void DamageZone::Trigger() {
       continue;
     }
 
-    float distSqr = Vector2DistanceSqr(gameObject->position, enemy->position);
-    if (distSqr > radius * radius) {
+    if (!IsInsideEllipse(enemy->position, gameObject->position, width, height)) {
       continue;
     }
 

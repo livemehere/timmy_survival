@@ -1,4 +1,4 @@
-#include "LightningStrike.hpp"
+#include "DamageBurst.hpp"
 
 #include "../../Core/GameObject.hpp"
 #include "../../Core/World.hpp"
@@ -17,13 +17,25 @@ Vector2 GetKnockbackDirection(Vector2 from, Vector2 to) {
 
   return Vector2Normalize(dir);
 }
+
+bool IsInsideEllipse(Vector2 point, Vector2 center, float width, float height) {
+  float halfWidth = width * 0.5f;
+  float halfHeight = height * 0.5f;
+  if (halfWidth <= 0.0f || halfHeight <= 0.0f) {
+    return false;
+  }
+
+  float dx = (point.x - center.x) / halfWidth;
+  float dy = (point.y - center.y) / halfHeight;
+  return (dx * dx) + (dy * dy) <= 1.0f;
+}
 } // namespace
 
-void LightningStrike::Update(float dt) {
+void DamageBurst::Update(float dt) {
   hitTimer.Update(dt);
   lifetimeTimer.Update(dt);
 
-  if (!didStrike && !hitTimer.IsRunning()) {
+  if (!didBurst && !hitTimer.IsRunning()) {
     Trigger();
   }
 
@@ -32,39 +44,43 @@ void LightningStrike::Update(float dt) {
   }
 }
 
-void LightningStrike::Draw() {
+void DamageBurst::Draw() {
+  float halfWidth = width * 0.5f;
+  float halfHeight = height * 0.5f;
   float lifeProgress = lifetimeTimer.GetProgress();
 
-  if (!didStrike) {
+  if (!didBurst) {
     float telegraphProgress = hitTimer.GetTargetTime() > 0.0f
                                   ? hitTimer.GetProgress()
                                   : 1.0f;
     float alpha = 0.2f + telegraphProgress * 0.5f;
-    DrawCircleLinesV(gameObject->position, radius, Fade(SKYBLUE, alpha));
-    DrawCircleV(gameObject->position, radius * 0.3f, Fade(WHITE, alpha * 0.2f));
-
-    Vector2 top = Vector2Add(gameObject->position, {0.0f, -90.0f});
-    DrawLineEx(top, gameObject->position, 3.0f, Fade(WHITE, 0.25f + alpha * 0.6f));
+    DrawEllipse(static_cast<int>(gameObject->position.x),
+                static_cast<int>(gameObject->position.y), halfWidth, halfHeight,
+                Fade(WHITE, alpha * 0.1f));
+    DrawEllipseLines(static_cast<int>(gameObject->position.x),
+                     static_cast<int>(gameObject->position.y), halfWidth,
+                     halfHeight, Fade(SKYBLUE, alpha));
     return;
   }
 
   float fade = 1.0f - lifeProgress;
-  Vector2 top = Vector2Add(gameObject->position, {0.0f, -110.0f});
-  DrawLineEx(top, gameObject->position, 6.0f, Fade(WHITE, fade));
-  DrawCircleV(gameObject->position, radius, Fade(SKYBLUE, fade * 0.2f));
-  DrawCircleLinesV(gameObject->position, radius, Fade(WHITE, fade));
+  DrawEllipse(static_cast<int>(gameObject->position.x),
+              static_cast<int>(gameObject->position.y), halfWidth, halfHeight,
+              Fade(SKYBLUE, fade * 0.22f));
+  DrawEllipseLines(static_cast<int>(gameObject->position.x),
+                   static_cast<int>(gameObject->position.y), halfWidth,
+                   halfHeight, Fade(WHITE, fade));
 }
 
-void LightningStrike::Trigger() {
-  didStrike = true;
+void DamageBurst::Trigger() {
+  didBurst = true;
 
   for (auto *enemy : gameObject->world->GetObjectsByLayer(Layer::ENEMY)) {
     if (!enemy || !enemy->isAlive) {
       continue;
     }
 
-    float distSqr = Vector2DistanceSqr(gameObject->position, enemy->position);
-    if (distSqr > radius * radius) {
+    if (!IsInsideEllipse(enemy->position, gameObject->position, width, height)) {
       continue;
     }
 

@@ -72,8 +72,7 @@ void GameManager::HandleGlobalEvents() {
   if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
     Vector2 mouseWorldPos = GetScreenToWorld2D(
         GetMousePosition(), CameraManager::Get().GetCamera());
-    Prefabs::CreateEffect(world, mouseWorldPos,
-                          EffectDefinitions::LIGHTNING_STRIKE);
+    Prefabs::CreateEffect(world, mouseWorldPos, EffectDefinitions::DAMAGE_BURST);
   }
 
   if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {

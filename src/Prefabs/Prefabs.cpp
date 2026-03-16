@@ -1,7 +1,7 @@
 #include "Prefabs.hpp"
 #include "../Components/Colliders/CircleCollider.hpp"
 #include "../Components/EnemyAI.hpp"
-#include "../Components/Effects/LightningStrike.hpp"
+#include "../Components/Effects/DamageBurst.hpp"
 #include "../Components/Effects/DamageZone.hpp"
 #include "../Components/Health.hpp"
 #include "../Components/Lifetime.hpp"
@@ -74,13 +74,14 @@ GameObject *CreateEffect(World &world, Vector2 position,
   effect->position = position;
 
   switch (definition.type) {
-  case EffectType::LIGHTNING_STRIKE:
-    effect->AddComponent<LightningStrike>(
-        definition.damage, definition.radius, definition.hitDelay,
+  case EffectType::DAMAGE_BURST:
+    effect->AddComponent<DamageBurst>(
+        definition.damage, definition.width, definition.height, definition.hitDelay,
         definition.lifetime, definition.knockbackForce, definition.hitCooldown);
     break;
   case EffectType::DAMAGE_ZONE:
-    effect->AddComponent<DamageZone>(definition.damage, definition.radius,
+    effect->AddComponent<DamageZone>(definition.damage, definition.width,
+                                     definition.height,
                                      definition.lifetime,
                                      definition.knockbackForce,
                                      definition.tickInterval);
