@@ -5,7 +5,7 @@
 namespace SpriteClips {
 inline const SpriteClip PLAYER_IDLE = {
     .name = "Idle",
-    .texturePath = "../assets/source.png",
+    .texturePath = "assets/source.png",
     .startX = 128,
     .startY = 32,
     .frameWidth = 16,
@@ -17,7 +17,7 @@ inline const SpriteClip PLAYER_IDLE = {
 
 inline const SpriteClip PLAYER_WALK = {
     .name = "Walk",
-    .texturePath = "../assets/source.png",
+    .texturePath = "assets/source.png",
     .startX = 192,
     .startY = 32,
     .frameWidth = 16,
@@ -29,7 +29,7 @@ inline const SpriteClip PLAYER_WALK = {
 
 inline const SpriteClip KNIGHT_WALK = {
     .name = "Walk",
-    .texturePath = "../assets/source.png",
+    .texturePath = "assets/source.png",
     .startX = 192,
     .startY = 64,
     .frameWidth = 16,
@@ -41,7 +41,7 @@ inline const SpriteClip KNIGHT_WALK = {
 
 inline const SpriteClip WIZARD_FEMALE_WALK = {
     .name = "Walk",
-    .texturePath = "../assets/source.png",
+    .texturePath = "assets/source.png",
     .startX = 192,
     .startY = 128,
     .frameWidth = 16,
@@ -53,7 +53,7 @@ inline const SpriteClip WIZARD_FEMALE_WALK = {
 
 inline const SpriteClip WIZARD_MALE_WALK = {
     .name = "Walk",
-    .texturePath = "../assets/source.png",
+    .texturePath = "assets/source.png",
     .startX = 192,
     .startY = 160,
     .frameWidth = 16,
@@ -65,7 +65,7 @@ inline const SpriteClip WIZARD_MALE_WALK = {
 
 inline const SpriteClip DINOSAUR_WALK = {
     .name = "Walk",
-    .texturePath = "../assets/source.png",
+    .texturePath = "assets/source.png",
     .startX = 192,
     .startY = 224,
     .frameWidth = 16,
@@ -77,7 +77,7 @@ inline const SpriteClip DINOSAUR_WALK = {
 
 inline const SpriteClip BOSS_BRUTE_WALK = {
     .name = "Walk",
-    .texturePath = "../assets/source.png",
+    .texturePath = "assets/source.png",
     .startX = 144,
     .startY = 256,
     .frameWidth = 32,
@@ -89,7 +89,7 @@ inline const SpriteClip BOSS_BRUTE_WALK = {
 
 inline const SpriteClip GOLEM_WALK = {
     .name = "Walk",
-    .texturePath = "../assets/source.png",
+    .texturePath = "assets/source.png",
     .startX = 144,
     .startY = 304,
     .frameWidth = 32,
@@ -101,7 +101,7 @@ inline const SpriteClip GOLEM_WALK = {
 
 inline const SpriteClip VENOM_WALK = {
     .name = "Walk",
-    .texturePath = "../assets/source.png",
+    .texturePath = "assets/source.png",
     .startX = 144,
     .startY = 352,
     .frameWidth = 32,
@@ -113,7 +113,7 @@ inline const SpriteClip VENOM_WALK = {
 
 inline const SpriteClip COIN_IDLE = {
     .name = "Idle",
-    .texturePath = "../assets/source.png",
+    .texturePath = "assets/source.png",
     .startX = 288,
     .startY = 272,
     .frameWidth = 8,
@@ -125,7 +125,7 @@ inline const SpriteClip COIN_IDLE = {
 
 inline const SpriteClip ENERGY_BALL = {
     .name = "EnergyBall",
-    .texturePath = "../assets/source.png",
+    .texturePath = "assets/source.png",
     .startX = 288,
     .startY = 0,
     .frameWidth = 16,
@@ -137,7 +137,7 @@ inline const SpriteClip ENERGY_BALL = {
 
 inline const SpriteClip KNIFE = {
     .name = "Knife",
-    .texturePath = "../assets/source.png",
+    .texturePath = "assets/source.png",
     .startX = 288,
     .startY = 16,
     .frameWidth = 16,
@@ -149,7 +149,7 @@ inline const SpriteClip KNIFE = {
 
 inline const SpriteClip ORBIT_BLADE = {
     .name = "OrbitBlade",
-    .texturePath = "../assets/source.png",
+    .texturePath = "assets/source.png",
     .startX = 304,
     .startY = 112,
     .frameWidth = 16,

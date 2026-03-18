@@ -1,6 +1,7 @@
 #pragma once
 
 #include "raylib.h"
+#include <filesystem>
 #include <string>
 #include <unordered_map>
 
@@ -21,5 +22,6 @@ public:
 
   void Init();
   void Clear();
+  static std::string ResolvePath(const std::string &path);
   Texture2D *GetTexture(const std::string &path);
 };

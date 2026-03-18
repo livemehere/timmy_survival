@@ -12,6 +12,7 @@
 #include "../Prefabs/Prefabs.hpp"
 #include "../Utils/MathUtils.hpp"
 #include "CameraManager.hpp"
+#include "ResourceManager.hpp"
 #include "ShopItemData.hpp"
 #include "ShopTypes.hpp"
 #include "raylib.h"
@@ -609,7 +610,9 @@ void GameManager::DrawShopOverlay() {
 
 void GameManager::Init() {
 
-  shader = LoadShader(nullptr, "../assets/shaders/world.frag");
+  const std::string shaderPath =
+      ResourceManager::ResolvePath("assets/shaders/world.frag");
+  shader = LoadShader(nullptr, shaderPath.c_str());
 
   centresLoc = GetShaderLocation(shader, "centres");
   timesLoc = GetShaderLocation(shader, "times");

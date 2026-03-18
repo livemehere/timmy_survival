@@ -22,6 +22,27 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
+    },
+    {
+      "name": "app-release",
+      "displayName": "macOS App Release (Ninja)",
+      "inherits": "base",
+      "binaryDir": "${sourceDir}/build-app",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "web-release",
+      "displayName": "Web Release (Emscripten)",
+      "inherits": "base",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build-web",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_TOOLCHAIN_FILE": "$env{EMSCRIPTEN}/cmake/Modules/Platform/Emscripten.cmake",
+        "PLATFORM": "Web"
+      }
     }
   ],
   "buildPresets": [
@@ -32,6 +53,14 @@
     {
       "name": "release",
       "configurePreset": "release"
+    },
+    {
+      "name": "app-release",
+      "configurePreset": "app-release"
+    },
+    {
+      "name": "web-release",
+      "configurePreset": "web-release"
     }
   ]
 }
