@@ -6,7 +6,7 @@
 namespace ProjectileDefinitions {
 inline const ProjectileDefinition KNIFE = {
     .name = "projectile_knife",
-    .damage = 1.5f,  // 1.0 -> 1.5 (balance adjustment)
+    .damage = 1.7f,  // 1.0 -> 1.7 (balance adjustment)
     .lifetime = 2.0f,
     .speed = 300.0f,
     .colliderRadius = 2.0f,
@@ -28,12 +28,12 @@ inline const ProjectileDefinition KNIFE = {
 
 inline const ProjectileDefinition HOMING_MISSILE = {
     .name = "projectile_homingMissile",
-    .damage = 2.0f,
-    .lifetime = 4.0f,
-    .speed = 200.0f,
+    .damage = 1.35f,
+    .lifetime = 2.8f,
+    .speed = 170.0f,
     .colliderRadius = 4.0f,
-    .pierce = 2,
-    .knockbackForce = 80.0f,  // Reduced knockback
+    .pierce = 1,
+    .knockbackForce = 55.0f,  // Reduced knockback
     .spritePreset =
         {
             .clips = {SpriteClips::KNIFE},
@@ -46,6 +46,6 @@ inline const ProjectileDefinition HOMING_MISSILE = {
     .rotateToVelocity = true,
     .rotationOffset = 90.0f,
     .isHoming = true,
-    .homingTurnRate = 6.5f,
+    .homingTurnRate = 4.2f,
 };
 } // namespace ProjectileDefinitions

@@ -10,40 +10,40 @@ inline const std::vector<StageDefinition> ALL = {
     {
         .name = "Stage 1",
         .duration = 30.0f,
-        .totalSpawnMin = 34,
-        .totalSpawnMax = 46,
+        .totalSpawnMin = 40,
+        .totalSpawnMax = 54,
         .spawnIntervalJitter = 0.16f,
         .spawnRadiusMin = 360.0f,
         .spawnRadiusMax = 760.0f,
         .enemies = {{.enemy = &EnemyDefinitions::KNIGHT, .weight = 100}},
-        .healthScaling = 1.15f,      // Next stage: +15% HP
-        .spawnCountScaling = 1.1f,   // Next stage: +10% spawn count
-        .spawnSpeedScaling = 0.95f,  // Next stage: 5% faster spawn
+        .healthScaling = 1.22f,      // Next stage: +22% HP
+        .spawnCountScaling = 1.16f,  // Next stage: +16% spawn count
+        .spawnSpeedScaling = 0.92f,  // Next stage: 8% faster spawn
         .isRepeatable = true,
         .maxBossCount = 0,           // No boss limit for stage 1
     },
     {
         .name = "Stage 2",
         .duration = 60.0f,
-        .totalSpawnMin = 56,
-        .totalSpawnMax = 74,
+        .totalSpawnMin = 66,
+        .totalSpawnMax = 88,
         .spawnIntervalJitter = 0.18f,
         .spawnRadiusMin = 340.0f,
         .spawnRadiusMax = 780.0f,
         .enemies = {{.enemy = &EnemyDefinitions::KNIGHT, .weight = 45},
                     {.enemy = &EnemyDefinitions::WIZARD_FEMALE, .weight = 30},
                     {.enemy = &EnemyDefinitions::WIZARD_MALE, .weight = 25}},
-        .healthScaling = 1.2f,       // Next stage: +20% HP
-        .spawnCountScaling = 1.15f,  // Next stage: +15% spawn count
-        .spawnSpeedScaling = 0.9f,   // Next stage: 10% faster spawn
+        .healthScaling = 1.28f,      // Next stage: +28% HP
+        .spawnCountScaling = 1.2f,   // Next stage: +20% spawn count
+        .spawnSpeedScaling = 0.86f,  // Next stage: 14% faster spawn
         .isRepeatable = true,
         .maxBossCount = 0,           // No boss limit for stage 2
     },
     {
         .name = "Stage 3",
         .duration = 60.0f,
-        .totalSpawnMin = 90,
-        .totalSpawnMax = 115,
+        .totalSpawnMin = 105,
+        .totalSpawnMax = 140,
         .spawnIntervalJitter = 0.25f,
         .spawnRadiusMin = 320.0f,
         .spawnRadiusMax = 720.0f,
@@ -54,11 +54,11 @@ inline const std::vector<StageDefinition> ALL = {
                     {.enemy = &EnemyDefinitions::BOSS_BRUTE, .weight = 2},
                     {.enemy = &EnemyDefinitions::GOLEM, .weight = 2},
                     {.enemy = &EnemyDefinitions::VENOM, .weight = 2}},
-        .healthScaling = 1.25f,      // Next stage: +25% HP
-        .spawnCountScaling = 1.2f,   // Next stage: +20% spawn count
-        .spawnSpeedScaling = 0.85f,  // Next stage: 15% faster spawn
+        .healthScaling = 1.36f,      // Next stage: +36% HP
+        .spawnCountScaling = 1.26f,  // Next stage: +26% spawn count
+        .spawnSpeedScaling = 0.8f,   // Next stage: 20% faster spawn
         .isRepeatable = true,        // Repeat Stage 3 pattern infinitely
-        .maxBossCount = 2,           // Max 2 bosses on screen
+        .maxBossCount = 3,           // Max 3 bosses on screen
     },
 };
 
@@ -90,7 +90,8 @@ inline StageDefinition CreateScaledStage(int baseStageIndex, int repeatCount,
   scaled.duration = base.duration * accumulatedSpeedScale;
 
   // Increase spawn radius slightly (difficulty ramp)
-  scaled.spawnRadiusMax = base.spawnRadiusMax + (repeatCount * 20.0f);
+  scaled.spawnRadiusMin = std::max(260.0f, base.spawnRadiusMin - (repeatCount * 10.0f));
+  scaled.spawnRadiusMax = base.spawnRadiusMax + (repeatCount * 12.0f);
 
   return scaled;
 }

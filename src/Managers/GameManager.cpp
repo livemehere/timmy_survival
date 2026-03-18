@@ -146,21 +146,21 @@ WeaponDefinition GameManager::BuildEnergyBallDefinition(int index) const {
   definition.name = TextFormat("weapon_energyBall_%d", index);
   definition.followOffset = {index == 0 ? -10.0f : 10.0f, -10.0f};
   definition.cooldown *=
-      std::max(0.2f, 1.0f - 0.1f * progression.energyBallAttackSpeedLevel);
-  definition.damage += progression.energyBallDamageLevel * 0.5f;
-  definition.range *= (1.0f + 0.15f * progression.energyBallRangeLevel);
+      std::max(0.42f, 1.0f - 0.08f * progression.energyBallAttackSpeedLevel);
+  definition.damage += progression.energyBallDamageLevel * 0.45f;
+  definition.range *= (1.0f + 0.12f * progression.energyBallRangeLevel);
   definition.projectileDefinition.pierce +=
       progression.energyBallProjectilePierceLevel;
   definition.projectileDefinition.knockbackForce *=
-      (1.0f + 0.2f * progression.energyBallProjectileKnockbackLevel);
+      (1.0f + 0.15f * progression.energyBallProjectileKnockbackLevel);
   return definition;
 }
 
 WeaponDefinition GameManager::BuildOrbitWeaponDefinition() const {
   auto definition = WeaponDefinitions::ORBIT_BLADE;
   definition.count = progression.orbitCount;
-  definition.damage += progression.orbitDamageLevel * 0.5f;
-  definition.orbitSpeedDegrees *= (1.0f + 0.1f * progression.orbitSpeedLevel);
+  definition.damage += progression.orbitDamageLevel * 0.35f;
+  definition.orbitSpeedDegrees *= (1.0f + 0.08f * progression.orbitSpeedLevel);
   return definition;
 }
 
@@ -169,10 +169,13 @@ WeaponDefinition GameManager::BuildHomingMissileDefinition(int index) const {
   definition.name = TextFormat("weapon_homingMissile_%d", index);
   definition.followOffset = {10.0f + index * 15.0f, -10.0f};
   definition.cooldown *=
-      std::max(0.3f, 1.0f - 0.08f * progression.homingMissileSpeedLevel);
-  definition.damage += progression.homingMissileDamageLevel * 0.5f;
+      std::max(0.55f, 1.0f - 0.06f * progression.homingMissileSpeedLevel);
+  definition.damage += progression.homingMissileDamageLevel * 0.3f;
+  definition.projectileDefinition.speed *=
+      (1.0f + 0.08f * progression.homingMissileSpeedLevel);
   definition.projectileDefinition.homingTurnRate *=
-      (1.0f + 0.15f * progression.homingMissileSpeedLevel);
+      (1.0f + 0.08f * progression.homingMissileSpeedLevel);
+  definition.range *= (1.0f + 0.08f * progression.homingMissileSpeedLevel);
   return definition;
 }
 
@@ -443,7 +446,7 @@ bool GameManager::PurchaseShopOffer(int offerIndex) {
     progression.orbitCount = std::max(1, progression.orbitCount);
     break;
   case ShopItemId::ADD_ORBIT_BLADE:
-    progression.orbitCount = std::min(5, progression.orbitCount + 1);
+    progression.orbitCount = std::min(4, progression.orbitCount + 1);
     break;
   case ShopItemId::ORBIT_SPEED_UP:
     progression.orbitSpeedLevel++;
@@ -458,7 +461,7 @@ bool GameManager::PurchaseShopOffer(int offerIndex) {
     break;
   case ShopItemId::ADD_HOMING_MISSILE:
     progression.homingMissileCount =
-        std::min(3, progression.homingMissileCount + 1);
+        std::min(2, progression.homingMissileCount + 1);
     break;
   case ShopItemId::HOMING_MISSILE_DAMAGE_UP:
     progression.homingMissileDamageLevel++;

@@ -20,6 +20,7 @@
 #include "Definitions/Sprites.hpp"
 #include "raylib.h"
 #include "raymath.h"
+#include <algorithm>
 #include <string>
 
 namespace {
@@ -155,14 +156,17 @@ GameObject *CreateEnemy(World &world, Vector2 position, GameObject *target,
   // Boss enemy death effect: coin explosion
   if (definition.isBoss) {
     health->onDeath = [enemy, &world, scaledMaxHp]() {
-      // Spawn multiple coins based on boss HP (1 coin per 5 HP)
-      int coinCount = static_cast<int>(scaledMaxHp / 5.0f);
+      int coinCount = std::clamp(static_cast<int>(scaledMaxHp / 3.0f), 18, 42);
       for (int i = 0; i < coinCount; i++) {
+        Vector2 spawnOffset = {
+            static_cast<float>(GetRandomValue(-12, 12)),
+            static_cast<float>(GetRandomValue(-10, 10))};
         Vector2 scatterVel = {
-            static_cast<float>(GetRandomValue(-200, 200)),
-            static_cast<float>(GetRandomValue(-300, -100)) // Upward bias
+            static_cast<float>(GetRandomValue(-260, 260)),
+            static_cast<float>(GetRandomValue(-340, -80)) // Upward bias
         };
-        GameObject *coin = CreateCoin(world, enemy->position);
+        GameObject *coin =
+            CreateCoin(world, Vector2Add(enemy->position, spawnOffset));
         auto velocity = coin->GetComponent<Velocity>();
         if (velocity) {
           velocity->Apply(scatterVel);

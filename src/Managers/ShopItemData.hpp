@@ -48,10 +48,10 @@ inline const std::unordered_map<ShopItemId, ShopItemConfig> kShopItemData = {
 
     {ShopItemId::ADD_ORBIT_BLADE,
      {ShopItemId::ADD_ORBIT_BLADE, ShopCategory::WEAPON, "Orbit Blade +1",
-      "Add one orbit blade. Max 5.", 10, 16,
-      [](const PlayerProgression &p) {
-        return p.orbitUnlocked && p.orbitCount < 5;
-      }}},
+       "Add one orbit blade. Max 4.", 10, 16,
+       [](const PlayerProgression &p) {
+         return p.orbitUnlocked && p.orbitCount < 4;
+       }}},
 
     {ShopItemId::ORBIT_SPEED_UP,
      {ShopItemId::ORBIT_SPEED_UP, ShopCategory::WEAPON, "Orbit Speed +10%",
@@ -66,15 +66,15 @@ inline const std::unordered_map<ShopItemId, ShopItemConfig> kShopItemData = {
     // Homing Missile
     {ShopItemId::UNLOCK_HOMING_MISSILE,
      {ShopItemId::UNLOCK_HOMING_MISSILE, ShopCategory::WEAPON,
-      "Unlock Homing Missile", "Gain a homing missile weapon.", 16, 18,
-      [](const PlayerProgression &p) { return !p.homingMissileUnlocked; }}},
+       "Unlock Homing Missile", "Gain a homing missile weapon.", 18, 16,
+       [](const PlayerProgression &p) { return !p.homingMissileUnlocked; }}},
 
     {ShopItemId::ADD_HOMING_MISSILE,
      {ShopItemId::ADD_HOMING_MISSILE, ShopCategory::WEAPON, "Homing Missile +1",
-      "Add one homing missile. Max 3.", 12, 16,
-      [](const PlayerProgression &p) {
-        return p.homingMissileUnlocked && p.homingMissileCount < 3;
-      }}},
+       "Add one homing missile. Max 2.", 14, 14,
+       [](const PlayerProgression &p) {
+         return p.homingMissileUnlocked && p.homingMissileCount < 2;
+       }}},
 
     {ShopItemId::HOMING_MISSILE_DAMAGE_UP,
      {ShopItemId::HOMING_MISSILE_DAMAGE_UP, ShopCategory::WEAPON,
