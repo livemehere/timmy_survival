@@ -6,4 +6,4 @@
 
 ![img](docs/screenshot.png)
 
-![video-play](docs/sample.pm4)
+![video-play](docs/sample.mp4)
