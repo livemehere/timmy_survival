@@ -18,6 +18,10 @@
 #include "raylib.h"
 #include "raymath.h"
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 #include <algorithm>
 #include <array>
 
@@ -613,9 +617,19 @@ void GameManager::DrawShopOverlay() {
 
 void GameManager::Init() {
 
+#ifdef __EMSCRIPTEN__
+  const std::string shaderPath =
+      ResourceManager::ResolvePath("assets/shaders/world_web.frag");
+#else
   const std::string shaderPath =
       ResourceManager::ResolvePath("assets/shaders/world.frag");
+#endif
   shader = LoadShader(nullptr, shaderPath.c_str());
+  if (shader.id == 0) {
+    TraceLog(LOG_WARNING, "SHADER: Failed to load shader from: %s", shaderPath.c_str());
+  } else {
+    TraceLog(LOG_INFO, "SHADER: Loaded shader from: %s", shaderPath.c_str());
+  }
 
   centresLoc = GetShaderLocation(shader, "centres");
   timesLoc = GetShaderLocation(shader, "times");
@@ -1291,11 +1305,19 @@ void GameManager::Draw() {
 
   BeginDrawing();
   ClearBackground(BLACK);
-  BeginShaderMode(shader);
+
+  // Negative height flips the texture vertically — required for both desktop and WebGL
+  // because raylib RenderTexture stores pixels bottom-to-top (OpenGL convention).
   Rectangle sourceRec = {0, 0, static_cast<float>(renderTexture.texture.width),
                          static_cast<float>(-renderTexture.texture.height)};
-  DrawTextureRec(renderTexture.texture, sourceRec, {0, 0}, WHITE);
-  EndShaderMode();
+
+  if (shader.id != 0) {
+    BeginShaderMode(shader);
+    DrawTextureRec(renderTexture.texture, sourceRec, {0, 0}, WHITE);
+    EndShaderMode();
+  } else {
+    DrawTextureRec(renderTexture.texture, sourceRec, {0, 0}, WHITE);
+  }
 
   DrawUI();
   DrawFPS(10, 10);
