@@ -6,4 +6,4 @@
 
 ![img](docs/screenshot.png)
 
-<video controls src="docs/sample.mp4" title="Sample Video"></video>
+<video controls src="https://github.com/livemehere/timmy_survival/blob/main/docs/sample.mp4" title="Sample Video"></video>
