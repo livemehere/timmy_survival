@@ -6,4 +6,4 @@
 
 ![img](docs/screenshot.png)
 
-![video-play](docs/sample.mp4)
+<video src="docs/sample.mp4" controls width="100%"></video>
