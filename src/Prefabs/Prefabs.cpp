@@ -1,8 +1,8 @@
 #include "Prefabs.hpp"
 #include "../Components/Colliders/CircleCollider.hpp"
-#include "../Components/EnemyAI.hpp"
 #include "../Components/Effects/DamageBurst.hpp"
 #include "../Components/Effects/DamageZone.hpp"
+#include "../Components/EnemyAI.hpp"
 #include "../Components/Health.hpp"
 #include "../Components/Lifetime.hpp"
 #include "../Components/Movement/Follow.hpp"
@@ -16,7 +16,10 @@
 #include "../Components/Weapons/Projectile.hpp"
 #include "../Core/GameObject.hpp"
 #include "../Managers/GameManager.hpp"
+#include "../Managers/CameraManager.hpp"
 #include "Definitions/Sprites.hpp"
+#include "raylib.h"
+#include "raymath.h"
 #include <string>
 
 namespace {
@@ -46,18 +49,58 @@ namespace Prefabs {
 GameObject *CreatePlayer(World &world, Vector2 position) {
   // Core
   GameObject *player = world.CreateObject("player");
+  player->layer = Layer::PLAYER;
   player->position = position;
-  player->AddComponent<CircleCollider>(8.0f);
-  player->AddComponent<PlayerController>(100.0f);
+  auto bodyCollider = player->AddComponent<CircleCollider>(8.0f);
+  bodyCollider->label = ColliderLabel::PLAYER_BODY;
+  player->AddComponent<PlayerController>(140.0f);
+  player->AddComponent<Velocity>(Vector2{0.0f, 0.0f}, 9.0f);
+
+  // Add player health
+  auto *playerHealth = player->AddComponent<Health>(100.0f);
+  playerHealth->invincibilityTime = 0.8f;
+  playerHealth->useSharedInvincibility = true;
+  playerHealth->onDamage = [player](float damage, GameObject *source) {
+    if (!source) {
+      return;
+    }
+
+    Vector2 pushDir = Vector2Subtract(player->position, source->position);
+    if (Vector2LengthSqr(pushDir) <= 0.001f) {
+      pushDir = {1.0f, 0.0f};
+    } else {
+      pushDir = Vector2Normalize(pushDir);
+    }
+
+    auto velocity = player->GetComponent<Velocity>();
+    if (velocity) {
+      float knockbackStrength = 130.0f + damage * 2.0f;
+      velocity->Apply(Vector2Scale(pushDir, knockbackStrength));
+    }
+
+    CameraManager::Get().Shake(3.5f, 0.12f);
+  };
+  playerHealth->onDeath = [player]() {
+    // Handle game over
+    GameManager::Get().gameOver = true;
+  };
 
   // Item Collider
   auto itemCollider = player->AddComponent<CircleCollider>(50.0f);
   itemCollider->isTrigger = true;
+  itemCollider->label = ColliderLabel::PLAYER_PICKUP;
   itemCollider->onTriggerEnter.AddListener([player](Collider *other) {
     if (other->gameObject->layer == Layer::ITEM) {
       auto magnet = other->gameObject->GetComponent<Magnet>();
       if (magnet) {
         magnet->targetPos = &(player->position);
+        magnet->speed = 220.0f;
+        magnet->acceleration = 1000.0f;
+        magnet->maxSpeed = 760.0f;
+        magnet->onCollect = [other]() {
+          other->gameObject->Destroy();
+          GameManager::Get().AddCoin(1);
+        };
       }
     }
   });
@@ -76,13 +119,13 @@ GameObject *CreateEffect(World &world, Vector2 position,
   switch (definition.type) {
   case EffectType::DAMAGE_BURST:
     effect->AddComponent<DamageBurst>(
-        definition.damage, definition.width, definition.height, definition.hitDelay,
-        definition.lifetime, definition.knockbackForce, definition.hitCooldown);
+        definition.damage, definition.width, definition.height,
+        definition.hitDelay, definition.lifetime, definition.knockbackForce,
+        definition.hitCooldown);
     break;
   case EffectType::DAMAGE_ZONE:
     effect->AddComponent<DamageZone>(definition.damage, definition.width,
-                                     definition.height,
-                                     definition.lifetime,
+                                     definition.height, definition.lifetime,
                                      definition.knockbackForce,
                                      definition.tickInterval);
     break;
@@ -92,19 +135,47 @@ GameObject *CreateEffect(World &world, Vector2 position,
 }
 
 GameObject *CreateEnemy(World &world, Vector2 position, GameObject *target,
-                        const EnemyDefinition &definition) {
+                        const EnemyDefinition &definition, float healthScale) {
   GameObject *enemy = world.CreateObject(definition.name);
   enemy->layer = Layer::ENEMY;
   enemy->position = position;
 
   enemy->AddComponent<Velocity>(Vector2{0.0f, 0.0f}, 15.0f);
-  enemy->AddComponent<CircleCollider>(definition.colliderRadius);
-  enemy->AddComponent<EnemyAI>(target, definition.speed);
+  auto collider = enemy->AddComponent<CircleCollider>(definition.colliderRadius);
+  collider->label = ColliderLabel::ENEMY_BODY; // Add enemy collider label
+  enemy->AddComponent<EnemyAI>(target, definition.speed, definition.damage,
+                                definition.attackRange, definition.chargeDuration,
+                                definition.dashDuration, definition.dashSpeedMultiplier,
+                                definition.attackCooldown);
 
-  auto health = enemy->AddComponent<Health>(definition.maxHp);
-  health->onDeath = [enemy, &world]() { CreateCoin(world, enemy->position); };
+  float scaledMaxHp = definition.maxHp * healthScale;
+  auto health = enemy->AddComponent<Health>(scaledMaxHp);
+  health->isBoss = definition.isBoss;  // Set boss flag
 
-  health->onDamage = [enemy, &world](float damage) {
+  // Boss enemy death effect: coin explosion
+  if (definition.isBoss) {
+    health->onDeath = [enemy, &world, scaledMaxHp]() {
+      // Spawn multiple coins based on boss HP (1 coin per 5 HP)
+      int coinCount = static_cast<int>(scaledMaxHp / 5.0f);
+      for (int i = 0; i < coinCount; i++) {
+        Vector2 scatterVel = {
+            static_cast<float>(GetRandomValue(-200, 200)),
+            static_cast<float>(GetRandomValue(-300, -100)) // Upward bias
+        };
+        GameObject *coin = CreateCoin(world, enemy->position);
+        auto velocity = coin->GetComponent<Velocity>();
+        if (velocity) {
+          velocity->Apply(scatterVel);
+        }
+      }
+    };
+  } else {
+    // Normal enemy death
+    health->onDeath = [enemy, &world]() { CreateCoin(world, enemy->position); };
+  }
+
+  health->onDamage = [enemy, &world](float damage, GameObject *source) {
+    (void)source;
     auto obj = world.CreateObject("text");
     obj->position = enemy->position;
     obj->AddComponent<TextRenderer>(std::to_string((int)damage), RED, 20, 1.0f,
@@ -114,6 +185,15 @@ GameObject *CreateEnemy(World &world, Vector2 position, GameObject *target,
   };
 
   ApplySpritePreset(enemy, definition.spritePreset);
+
+  // Apply visual scale
+  if (definition.scale != 1.0f) {
+    auto *sprite = enemy->GetComponent<SpriteRenderer>();
+    if (sprite) {
+      sprite->scale.x *= definition.scale;
+      sprite->scale.y *= definition.scale;
+    }
+  }
 
   return enemy;
 }
@@ -154,9 +234,17 @@ GameObject *CreateProjectile(World &world, Vector2 position, Vector2 velocity,
   projectile->position = position;
 
   float damage = damageOverride >= 0.0f ? damageOverride : definition.damage;
-  projectile->AddComponent<Projectile>(damage, definition.lifetime,
+  auto *projComponent = projectile->AddComponent<Projectile>(damage, definition.lifetime,
                                        definition.pierce,
                                        definition.knockbackForce);
+
+  // Configure homing behavior
+  projComponent->isHoming = definition.isHoming;
+  projComponent->rotateToVelocity = definition.rotateToVelocity;
+  projComponent->homingTurnRate = definition.homingTurnRate;
+  projComponent->rotationOffset = definition.rotationOffset;
+  projComponent->speed = definition.speed;
+
   projectile->AddComponent<Velocity>(velocity, 0.0f);
 
   auto collider =
@@ -175,12 +263,7 @@ GameObject *CreateCoin(World &world, Vector2 position) {
   auto collider = coin->AddComponent<CircleCollider>(8.0f);
   collider->isTrigger = true;
 
-  auto magnet = coin->AddComponent<Magnet>();
-  magnet->onCollect = [coin]() {
-    coin->Destroy();
-    GameManager::Get().AddCoin(1);
-  };
-
+  coin->AddComponent<Magnet>();
   ApplySpritePreset(coin, SpritePresets::COIN);
 
   return coin;

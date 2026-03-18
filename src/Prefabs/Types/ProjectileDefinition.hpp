@@ -14,4 +14,6 @@ struct ProjectileDefinition {
   SpritePreset spritePreset;
   bool rotateToVelocity = false;
   float rotationOffset = 0.0f;
+  bool isHoming = false;  // Whether this is a homing projectile
+  float homingTurnRate = 3.0f;  // Homing turn rate (radians/sec)
 };

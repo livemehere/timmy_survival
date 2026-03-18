@@ -20,7 +20,7 @@ inline const WeaponDefinition ENERGY_BALL = {
 inline const WeaponDefinition ORBIT_BLADE = {
     .type = WeaponType::ORBIT,
     .name = "weapon_orbitBlade",
-    .damage = 1.0f,
+    .damage = 2.0f,  // 1.0 -> 2.0 (balance adjustment)
     .knockbackForce = 120.0f,
     .hitCooldown = 0.35f,
     .cooldown = 0.0f,
@@ -33,5 +33,17 @@ inline const WeaponDefinition ORBIT_BLADE = {
     .count = 1,
     .colliderRadius = 8.0f,
     .spritePreset = SpritePresets::ORBIT_BLADE,
+};
+
+inline const WeaponDefinition HOMING_MISSILE = {
+    .type = WeaponType::FIRE,
+    .name = "weapon_homingMissile",
+    .damage = ProjectileDefinitions::HOMING_MISSILE.damage,
+    .cooldown = 0.8f,
+    .range = 400.0f,
+    .followOffset = {15.0f, -10.0f},
+    .followSpeed = 10.0f,
+    .spritePreset = SpritePresets::ENERGY_BALL,
+    .projectileDefinition = ProjectileDefinitions::HOMING_MISSILE,
 };
 } // namespace WeaponDefinitions

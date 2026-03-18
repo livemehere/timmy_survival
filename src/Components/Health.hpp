@@ -9,13 +9,15 @@ class Health : public Component {
 public:
   float maxHp;
   float hp;
+  bool isBoss = false;  // Boss enemy flag for larger health bar
+  bool useSharedInvincibility = false;
 
   float invincibilityTime = 0.1f;
   Timer invincibilityTimer = Timer(0.0f, false);
   std::unordered_map<GameObject *, Timer> sourceHitTimers;
 
   std::function<void()> onDeath;
-  std::function<void(float damage)> onDamage;
+  std::function<void(float damage, GameObject *source)> onDamage;
 
   Timer hitTimer = Timer(0.0f, false);
   float bounceScale = 0.15f;

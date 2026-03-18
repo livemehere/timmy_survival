@@ -12,7 +12,7 @@
 namespace Prefabs {
 GameObject *CreatePlayer(World &world, Vector2 position);
 GameObject *CreateEnemy(World &world, Vector2 position, GameObject *target,
-                        const EnemyDefinition &definition);
+                        const EnemyDefinition &definition, float healthScale = 1.0f);
 GameObject *CreateEffect(World &world, Vector2 position,
                          const EffectDefinition &definition);
 GameObject *CreateWeapon(World &world, GameObject *owner,

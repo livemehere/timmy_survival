@@ -41,18 +41,63 @@ void DamageZone::Update(float dt) {
 }
 
 void DamageZone::Draw() {
-  float halfWidth = width * 0.5f;
-  float halfHeight = height * 0.5f;
-  float fade = 1.0f - lifetimeTimer.GetProgress();
-  DrawEllipse(static_cast<int>(gameObject->position.x),
-              static_cast<int>(gameObject->position.y), halfWidth, halfHeight,
-              Fade(GREEN, 0.12f + fade * 0.1f));
-  DrawEllipseLines(static_cast<int>(gameObject->position.x),
-                   static_cast<int>(gameObject->position.y), halfWidth,
-                   halfHeight, Fade(LIME, 0.5f + fade * 0.4f));
-  DrawEllipseLines(static_cast<int>(gameObject->position.x),
-                   static_cast<int>(gameObject->position.y), halfWidth * 0.6f,
-                   halfHeight * 0.6f, Fade(YELLOW, 0.2f + fade * 0.3f));
+  float baseRadius = std::max(width, height) * 0.5f;
+  float progress = lifetimeTimer.GetProgress(); // 0.0 ~ 1.0
+  float fade = 1.0f - progress;                 // 1.0 ~ 0.0
+
+  // [1] Pop-in animation (Ease-Out)
+  // During the very beginning of lifetime (first 15%), it scales from 0 to 1x.
+  float popInProgress = std::min(1.0f, progress * 6.6f);
+  float easeOut = 1.0f - powf(1.0f - popInProgress, 3.0f);
+
+  // Final scale set to 1.2x for slightly larger appearance.
+  float currentRadius = baseRadius * (easeOut * 1.2f);
+
+  // [2] Fade-out
+  // Gradually becomes transparent when less than 30% lifetime remains.
+  float alphaMult = (fade < 0.3f) ? (fade / 0.3f) : 1.0f;
+
+  // [3] Continuous effect: keeps rotating strangely and pulsating
+  float time = GetTime();
+  float baseRotation = time * 45.0f; // 45 degrees rotation per second
+
+  // --- Layer 1: Widest green 5-gon on the ground (clockwise rotation) ---
+  DrawPoly(gameObject->position, 5, currentRadius, baseRotation,
+           Fade(GREEN, 0.25f * alphaMult));
+  // Outline is slightly thicker to clearly mark the damage zone boundary.
+  DrawPolyLinesEx(gameObject->position, 5, currentRadius, baseRotation,
+                  5.0f * easeOut, Fade(LIME, 0.6f * alphaMult));
+
+  // --- Layer 2: Middle gas layer (faster counter-clockwise rotation + pulsating)
+  // ---
+  float midScale = 0.7f + sinf(time * 6.0f) * 0.05f; // Wobble effect
+  DrawPoly(gameObject->position, 5, currentRadius * midScale,
+           -baseRotation * 1.5f, Fade(DARKGREEN, 0.4f * alphaMult));
+
+  // --- Layer 3: Most lethal central poison core (purple, irregular vibration) ---
+  float innerScale = 0.35f + cosf(time * 10.0f) * 0.05f;
+  DrawPoly(gameObject->position, 5, currentRadius * innerScale,
+           baseRotation * 2.0f, Fade(PURPLE, 0.55f * alphaMult));
+
+  // --- Detail: Mini poison gas particles bubbling around the damage zone ---
+  for (int i = 0; i < 5; i++) {
+    float bubbleOffset = time * 3.0f + i * 1.5f;
+    float angle = (i * 72.0f + sinf(bubbleOffset) * 30.0f) * DEG2RAD;
+
+    // Fluid feel: particles pushed outward from center then back in
+    float r = currentRadius * (0.4f + 0.5f * fabs(sinf(bubbleOffset * 1.2f)));
+
+    // Slight elliptical (perspective) feel by compressing y-axis to 0.7x
+    Vector2 bubblePos = {gameObject->position.x + cosf(angle) * r,
+                         gameObject->position.y + sinf(angle) * r * 0.7f};
+
+    // Particle size also grows and shrinks repeatedly
+    float bubbleRadius = 12.0f * (1.0f - fabs(sinf(bubbleOffset * 1.2f)));
+
+    // Particles unified as cute mini 5-gons!
+    DrawPoly(bubblePos, 5, bubbleRadius, time * 120.0f,
+             Fade(LIME, 0.7f * alphaMult));
+  }
 }
 
 void DamageZone::Trigger() {
@@ -61,7 +106,8 @@ void DamageZone::Trigger() {
       continue;
     }
 
-    if (!IsInsideEllipse(enemy->position, gameObject->position, width, height)) {
+    if (!IsInsideEllipse(enemy->position, gameObject->position, width,
+                         height)) {
       continue;
     }
 
@@ -72,7 +118,8 @@ void DamageZone::Trigger() {
 
     auto velocity = enemy->GetComponent<Velocity>();
     if (velocity && knockbackForce > 0.0f) {
-      Vector2 dir = GetZoneKnockbackDirection(gameObject->position, enemy->position);
+      Vector2 dir =
+          GetZoneKnockbackDirection(gameObject->position, enemy->position);
       velocity->Apply(Vector2Scale(dir, knockbackForce));
     }
   }

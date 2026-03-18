@@ -10,6 +10,7 @@
 
 class World {
 public:
+  static constexpr float MAP_HALF_SIZE = 960.0f;
   std::vector<std::unique_ptr<GameObject>> objects;
   std::vector<Collider *> activeColliders;
 

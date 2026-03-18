@@ -6,6 +6,15 @@
 
 class World;
 
+enum class ColliderLabel {
+  NONE,
+  PLAYER_BODY,
+  PLAYER_PICKUP,
+  ENEMY_BODY,
+  ENEMY_ATTACK,
+  DAMAGE_ZONE
+};
+
 enum class ColliderType { BOX, CIRCLE };
 
 struct CollisionRatios {
@@ -18,6 +27,7 @@ public:
   inline static bool debugMode = false;
 
   ColliderType type;
+  std::optional<ColliderLabel> label = std::nullopt;
   Vector2 offset = {0, 0};
   bool isStatic = false;
   bool isTrigger = false;

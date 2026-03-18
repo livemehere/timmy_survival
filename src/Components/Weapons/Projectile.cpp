@@ -7,9 +7,66 @@
 #include "../Colliders/CircleCollider.hpp"
 #include "../Health.hpp"
 #include "../Movement/Velocity.hpp"
+#include "../Render/SpriteRenderer.hpp"
 #include "../Particle.hpp"
 #include "raymath.h"
+#include <algorithm>
+#include <cfloat>
 #include <cmath>
+
+GameObject *Projectile::FindNextTarget() const {
+  GameObject *nearestEnemy = nullptr;
+  float nearestDistSq = FLT_MAX;
+
+  for (auto *obj : gameObject->world->GetObjectsByLayer(Layer::ENEMY)) {
+    if (!obj || !obj->isAlive || hitTargets.contains(obj)) {
+      continue;
+    }
+
+    float distSq = Vector2LengthSqr(Vector2Subtract(obj->position, gameObject->position));
+    if (distSq < nearestDistSq) {
+      nearestDistSq = distSq;
+      nearestEnemy = obj;
+    }
+  }
+
+  return nearestEnemy;
+}
+
+void Projectile::RedirectToTarget(GameObject *target) {
+  auto velocity = gameObject->GetComponent<Velocity>();
+  if (!velocity) {
+    return;
+  }
+
+  currentTarget = target;
+  if (!currentTarget || !currentTarget->isAlive) {
+    return;
+  }
+
+  Vector2 toTarget = Vector2Subtract(currentTarget->position, gameObject->position);
+  if (Vector2LengthSqr(toTarget) <= 0.001f) {
+    return;
+  }
+
+  velocity->velocity = Vector2Scale(Vector2Normalize(toTarget), speed);
+}
+
+namespace {
+void RotateProjectileSprite(GameObject *gameObject, Vector2 velocity,
+                            float rotationOffset, bool rotateToVelocity) {
+  if (!rotateToVelocity || Vector2LengthSqr(velocity) <= 0.001f) {
+    return;
+  }
+
+  auto sprite = gameObject->GetComponent<SpriteRenderer>();
+  if (!sprite) {
+    return;
+  }
+
+  sprite->rotation = atan2f(velocity.y, velocity.x) * RAD2DEG + rotationOffset;
+}
+} // namespace
 
 void Projectile::Update(float dt) {
   lifeTimer.Update(dt);
@@ -25,6 +82,46 @@ void Projectile::Update(float dt) {
       history.pop_back();
     }
   }
+
+  // Homing logic
+  if (isHoming) {
+    auto velocity = gameObject->GetComponent<Velocity>();
+    if (velocity) {
+      if ((!currentTarget || !currentTarget->isAlive) && pierce > 0) {
+        currentTarget = FindNextTarget();
+      }
+
+      // Rotate toward the target if available
+      if (currentTarget) {
+        Vector2 currentDir = Vector2LengthSqr(velocity->velocity) > 0.001f
+                                 ? Vector2Normalize(velocity->velocity)
+                                 : Vector2Normalize(Vector2Subtract(currentTarget->position,
+                                                                    gameObject->position));
+        Vector2 toTarget = Vector2Normalize(
+            Vector2Subtract(currentTarget->position, gameObject->position));
+
+        // Rotate from the current direction toward the target direction
+        float currentAngle = atan2f(currentDir.y, currentDir.x);
+        float targetAngle = atan2f(toTarget.y, toTarget.x);
+
+        // Calculate angle difference (-PI to PI)
+        float angleDiff = targetAngle - currentAngle;
+        while (angleDiff > PI) angleDiff -= 2 * PI;
+        while (angleDiff < -PI) angleDiff += 2 * PI;
+
+        // Clamp to the maximum turn speed
+        float maxTurn = homingTurnRate * dt;
+        float newAngle = currentAngle + std::clamp(angleDiff, -maxTurn, maxTurn);
+
+        // Set velocity using the new direction
+        Vector2 newDir = {cosf(newAngle), sinf(newAngle)};
+        velocity->velocity = Vector2Scale(newDir, speed);
+        RotateProjectileSprite(gameObject, velocity->velocity,
+                               this->rotationOffset,
+                               this->rotateToVelocity);
+      }
+    }
+  }
 }
 
 void Projectile::OnTriggerEnter(Collider *other) {
@@ -32,14 +129,16 @@ void Projectile::OnTriggerEnter(Collider *other) {
     return;
   }
 
-  auto health = other->gameObject->GetComponent<Health>();
+  GameObject *hitTarget = other->gameObject;
+  auto health = hitTarget->GetComponent<Health>();
   if (health && health->TakeDamage(damage, gameObject)) {
     pierce--;
+    hitTargets.insert(hitTarget);
+    currentTarget = nullptr;
 
-    auto velocity = other->gameObject->GetComponent<Velocity>();
+    auto velocity = hitTarget->GetComponent<Velocity>();
     if (velocity) {
-      Vector2 dir =
-          Vector2Subtract(other->gameObject->position, gameObject->position);
+      Vector2 dir = Vector2Subtract(hitTarget->position, gameObject->position);
       dir = Vector2Normalize(dir);
       velocity->Apply(Vector2Scale(dir, knockbackForce));
     }
@@ -50,6 +149,17 @@ void Projectile::OnTriggerEnter(Collider *other) {
 
   if (pierce <= 0) {
     gameObject->Destroy();
+    return;
+  }
+
+  if (isHoming) {
+    RedirectToTarget(FindNextTarget());
+    auto velocity = gameObject->GetComponent<Velocity>();
+    if (velocity) {
+      RotateProjectileSprite(gameObject, velocity->velocity,
+                             this->rotationOffset,
+                             this->rotateToVelocity);
+    }
   }
 }
 

@@ -43,6 +43,10 @@ bool Health::TakeDamage(float damage, GameObject *source,
     return false;
   }
 
+  if (useSharedInvincibility && invincibilityTimer.IsRunning()) {
+    return false;
+  }
+
   if (source) {
     auto it = sourceHitTimers.find(source);
     if (it != sourceHitTimers.end() && it->second.IsRunning()) {
@@ -58,6 +62,9 @@ bool Health::TakeDamage(float damage, GameObject *source,
     float cooldown = sourceInvincibilityTime >= 0.0f ? sourceInvincibilityTime
                                                      : invincibilityTime;
     sourceHitTimers[source].Reset(cooldown);
+    if (useSharedInvincibility) {
+      invincibilityTimer.Reset(cooldown);
+    }
   } else {
     invincibilityTimer.Reset(invincibilityTime);
   }
@@ -65,7 +72,7 @@ bool Health::TakeDamage(float damage, GameObject *source,
   hitTimer.Reset(0.1f);
 
   if (onDamage) {
-    onDamage(damage);
+    onDamage(damage, source);
   }
 
   if (MathUtils::GetRandom(0, 1) == 0) {
@@ -95,16 +102,43 @@ void Health::Die() {
 
 void Health::Draw() {
   Vector2 pos = gameObject->position;
-  float barW = 20.0f;
-  float barH = 3.0f;
-  float yOffset = 15.0f;
+
+  float barW = isBoss ? 220.0f : 20.0f;
+  float barH = isBoss ? 10.0f : 3.0f;
+  float yOffset = isBoss ? 34.0f : 15.0f;
   float hpRatio = hp / maxHp;
 
   Rectangle bgRec = {pos.x - barW / 2.0f, pos.y - yOffset, barW, barH};
   Rectangle fgRec = {pos.x - barW / 2.0f, pos.y - yOffset, barW * hpRatio,
                      barH};
 
-  DrawRectangleRec(bgRec, DARKGRAY);
-  DrawRectangleRec(fgRec, MAROON);
-  DrawRectangleLinesEx(bgRec, 0.5f, BLACK);
+  // Background color (very dark gray)
+  Color bgColor = isBoss ? (Color){30, 30, 30, 255} : DARKGRAY;
+  DrawRectangleRec(bgRec, bgColor);
+
+  // HP bar color (boss: ORANGE(60%+) -> RED(30-60%) -> MAROON(<30%))
+  Color healthColor;
+  if (!isBoss) {
+    healthColor = MAROON;
+  } else {
+    if (hpRatio > 0.6f) {
+      healthColor = ORANGE;
+    } else if (hpRatio > 0.3f) {
+      healthColor = RED;
+    } else {
+      healthColor = MAROON;
+    }
+  }
+  DrawRectangleRec(fgRec, healthColor);
+
+  // Border (boss: gold, normal: black)
+  Color borderColor = isBoss ? GOLD : BLACK;
+  float borderThickness = isBoss ? 1.5f : 0.5f;
+  DrawRectangleLinesEx(bgRec, borderThickness, borderColor);
+
+  // Extra boss health bar effect
+  if (isBoss) {
+    // Inner gold border
+    DrawRectangleLinesEx(bgRec, 0.8f, Fade(GOLD, 0.7f));
+  }
 }
